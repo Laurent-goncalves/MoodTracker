@@ -56,8 +56,6 @@ public class PageFragment extends Fragment implements Feelings {
 
         image_feeling.setImageResource(mFeelings[position]);
 
-
-
         // 6 - Update widgets with it
         frameLayout.setBackgroundColor(color);
 

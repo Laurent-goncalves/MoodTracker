@@ -2,5 +2,13 @@
     <string name="app_name">MoodTracker</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="feeling_7_days_ago">Il y a une semaine</string>
+    <string name="feeling_6_days_ago">Il y a six jours</string>
+    <string name="feeling_5_days_ago">Il y a cinq jours</string>
+    <string name="feeling_4_days_ago">Il y a quatre jours</string>
+    <string name="feeling_3_days_ago">Il y a trois jours</string>
+    <string name="feeling_2_days_ago">Avant-hier</string>
+    <string name="feeling_1_days_ago">Hier</string>
+
+
 </resources>

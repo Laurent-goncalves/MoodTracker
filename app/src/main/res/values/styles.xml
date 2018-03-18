@@ -5,7 +5,14 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">#72AAA1</item>
+    </style>
+
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">#72AAA1</item>
+        <item name="android:textColorPrimary">#868988</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">10dp</item>
     </style>
 
 </resources>
