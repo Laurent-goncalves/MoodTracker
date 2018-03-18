@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <array name="colorPagesViewPager">
+        <item>#DE3C50</item>
+        <item>#9B9B9B</item>
+        <item>#85B2E6</item>
+        <item>#B8E986</item>
+        <item>#F8EC50</item>
+    </array>
+
+</resources>
