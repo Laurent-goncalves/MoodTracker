@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.g.laurent.moodtracker.R;
 
 import java.util.Date;
@@ -25,7 +28,7 @@ public class ChronoFragment extends Fragment {
     @BindViews({ R.id.fragment_chrono_feeling1, R.id.fragment_chrono_feeling2, R.id.fragment_chrono_feeling3,
             R.id.fragment_chrono_feeling4,R.id.fragment_chrono_feeling5,R.id.fragment_chrono_feeling6,R.id.fragment_chrono_feeling7})
 
-    List<LinearLayout> mLinearLayouts;
+    List<RelativeLayout> mLinearLayouts;
 
     @BindViews({ R.id.fragment_chrono_comment1, R.id.fragment_chrono_comment2, R.id.fragment_chrono_comment3,
             R.id.fragment_chrono_comment4,R.id.fragment_chrono_comment5,R.id.fragment_chrono_comment6,R.id.fragment_chrono_comment7})
@@ -52,7 +55,7 @@ public class ChronoFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         // Recover sharedPreferences and colors table for the different feelings
-        sharedPreferences=getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        sharedPreferences=getContext().getSharedPreferences("chrono", Context.MODE_PRIVATE);
         colors = getResources().getIntArray(R.array.colorPagesViewPager);
 
         // For each day in sharedpreferences, adjust the linearlayout and the icon comment
@@ -63,13 +66,10 @@ public class ChronoFragment extends Fragment {
             comment = sharedPreferences.getString("COMMENT_" + i, null);
             mDateTime = new Date(sharedPreferences.getLong("DATE_TIME_" + i, 0));
 
-System.out.println("eeee " + i);
-
-            // FOR SAVE : sharedPreferences.edit().putLong("time", date.getTime()).apply();
-
             if (!mDateTime.equals(new Date(0))){ // if feeling saved in sharepreferences for the day "i"
                 // the linearlayout is adjusted to the width of the view
-                mLinearLayouts.get(i).getLayoutParams().width = position * container.getWidth() / 7;
+                mLinearLayouts.get(i).getLayoutParams().width=(1+position) * container.getWidth()/5;
+                //mImageViews.get(i).setWidth((1+position) * container.getWidth()/5);
 
                 // the linearlayout must be colored with the color related to the feeling
                 mLinearLayouts.get(i).setBackgroundColor(colors[position]);

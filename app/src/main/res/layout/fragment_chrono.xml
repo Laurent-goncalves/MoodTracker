@@ -9,138 +9,166 @@
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
-
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/fragment_chrono_feeling7"
-            android:layout_height="0dp"
-            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/feeling_7_days_ago"/>
+                android:id="@+id/fragment_chrono_text7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/feeling_7_days_ago"/>
 
             <ImageView
-            android:id="@+id/fragment_chrono_comment7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        </LinearLayout>
+                android:id="@+id/fragment_chrono_comment7"
+                android:layout_below="@+id/fragment_chrono_text7"
+                android:layout_alignEnd="@+id/fragment_chrono_text7"
+                android:padding="@dimen/size_padding_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/fragment_chrono_feeling6"
-            android:layout_height="0dp"
-            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/fragment_chrono_text6"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/feeling_6_days_ago"/>
 
             <ImageView
                 android:id="@+id/fragment_chrono_comment6"
+                android:layout_below="@+id/fragment_chrono_text6"
+                android:layout_alignEnd="@+id/fragment_chrono_text6"
+                android:padding="@dimen/size_padding_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
 
-        <LinearLayout
+        </RelativeLayout>
+
+
+        <RelativeLayout
             android:id="@+id/fragment_chrono_feeling5"
-            android:layout_height="0dp"
-            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/fragment_chrono_text5"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/feeling_5_days_ago"/>
 
             <ImageView
                 android:id="@+id/fragment_chrono_comment5"
+                android:layout_below="@+id/fragment_chrono_text5"
+                android:layout_alignEnd="@+id/fragment_chrono_text5"
+                android:padding="@dimen/size_padding_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
+
+        </RelativeLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/fragment_chrono_feeling4"
-            android:layout_height="0dp"
-            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/fragment_chrono_text4"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/feeling_4_days_ago"/>
 
             <ImageView
                 android:id="@+id/fragment_chrono_comment4"
+                android:layout_below="@+id/fragment_chrono_text4"
+                android:layout_alignEnd="@+id/fragment_chrono_text4"
+                android:padding="@dimen/size_padding_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
 
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/fragment_chrono_feeling3"
-            android:layout_height="0dp"
-            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/fragment_chrono_text3"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/feeling_3_days_ago"/>
 
             <ImageView
                 android:id="@+id/fragment_chrono_comment3"
+                android:layout_below="@+id/fragment_chrono_text3"
+                android:layout_alignEnd="@+id/fragment_chrono_text3"
+                android:padding="@dimen/size_padding_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
 
-        <LinearLayout
+        </RelativeLayout>
+
+
+        <RelativeLayout
             android:id="@+id/fragment_chrono_feeling2"
-            android:layout_height="0dp"
-            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/fragment_chrono_text2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/feeling_2_days_ago"/>
 
             <ImageView
                 android:id="@+id/fragment_chrono_comment2"
+                android:layout_below="@+id/fragment_chrono_text2"
+                android:layout_alignEnd="@+id/fragment_chrono_text2"
+                android:padding="@dimen/size_padding_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
 
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/fragment_chrono_feeling1"
-            android:layout_height="0dp"
-            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/fragment_chrono_text1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/feeling_1_days_ago"/>
 
             <ImageView
                 android:id="@+id/fragment_chrono_comment1"
+                android:layout_below="@+id/fragment_chrono_text1"
+                android:layout_alignEnd="@+id/fragment_chrono_text1"
+                android:padding="@dimen/size_padding_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
+
 </FrameLayout>
