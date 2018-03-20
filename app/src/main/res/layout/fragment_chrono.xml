@@ -1,10 +1,11 @@
-<FrameLayout
+<LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_chrono_layout"
-    tools:context="com.g.laurent.moodtracker.Controllers.ChronoFragment">
+    tools:context="com.g.laurent.moodtracker.Controllers.Fragments.ChronoFragment">
 
     <LinearLayout
         android:layout_height="match_parent"
@@ -171,4 +172,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>

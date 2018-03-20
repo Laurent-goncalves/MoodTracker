@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_page_back"
-    tools:context="com.g.laurent.moodtracker.Controllers.PageFragment">
+    tools:context="com.g.laurent.moodtracker.Controllers.Fragments.PageFragment">
 
     <ImageView
         android:layout_width="match_parent"
