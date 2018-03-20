@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.g.laurent.moodtracker.R;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 
@@ -41,6 +45,7 @@ public class ChronoFragment extends Fragment {
     private String comment;
     private Date mDateTime;
     private int[] colors;
+    private HashMap<Integer,String> CommentTable;
 
     public ChronoFragment() {
         // Required empty public constructor
@@ -51,8 +56,13 @@ public class ChronoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+
         View view = inflater.inflate(R.layout.fragment_chrono, container, false);
         ButterKnife.bind(this, view);
+
+
+        CommentTable=new HashMap<Integer,String>();
 
         // Recover sharedPreferences and colors table for the different feelings
         sharedPreferences=getContext().getSharedPreferences("chrono", Context.MODE_PRIVATE);
@@ -66,6 +76,8 @@ public class ChronoFragment extends Fragment {
             comment = sharedPreferences.getString("COMMENT_" + i, null);
             mDateTime = new Date(sharedPreferences.getLong("DATE_TIME_" + i, 0));
 
+
+
             if (!mDateTime.equals(new Date(0))){ // if feeling saved in sharepreferences for the day "i"
                 // the linearlayout is adjusted to the width of the view
                 mLinearLayouts.get(i).getLayoutParams().width=(1+position) * container.getWidth()/5;
@@ -77,6 +89,18 @@ public class ChronoFragment extends Fragment {
                 // the icon for the comment appears only if there is a comment different than null
                 if (comment != null && !comment.equals("")) {
                     mImageViews.get(i).setImageResource(R.drawable.ic_comment_black_48px);
+
+                    CommentTable.put(mImageViews.get(i).getId(),comment);
+
+                    // add a clicklistener on comment icon to open a Toast message with the comment
+                    mImageViews.get(i).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Toast toast = Toast.makeText(getContext(), CommentTable.get(v.getId()), Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    });
                 }
 
             } else { // else, the linearlayout is invisible
