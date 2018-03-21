@@ -3,5 +3,6 @@
 
     <dimen name="width_icon_comment">50dp</dimen>
     <dimen name="size_padding_imageview">10dp</dimen>
+    <dimen name="size_padding_textview">5dp</dimen>
 
 </resources>

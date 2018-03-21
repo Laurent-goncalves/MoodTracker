@@ -10,6 +10,8 @@ import com.g.laurent.moodtracker.R;
 
 public class ChronoActivity extends AppCompatActivity {
 
+    private ChronoFragment chronoFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +21,7 @@ public class ChronoActivity extends AppCompatActivity {
 
     private void configureandshow_chronofragment(){
 
-        ChronoFragment chronoFragment = new ChronoFragment();
+        chronoFragment = new ChronoFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.activity_chrono_layout, chronoFragment).commit();
 

@@ -1,5 +1,4 @@
-<LinearLayout
-    android:orientation="vertical"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,6 +21,8 @@
                 android:id="@+id/fragment_chrono_text7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="@dimen/size_padding_textview"
                 android:text="@string/feeling_7_days_ago"/>
 
             <ImageView
@@ -45,6 +46,8 @@
                 android:id="@+id/fragment_chrono_text6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="@dimen/size_padding_textview"
                 android:text="@string/feeling_6_days_ago"/>
 
             <ImageView
@@ -68,6 +71,8 @@
                 android:id="@+id/fragment_chrono_text5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="@dimen/size_padding_textview"
                 android:text="@string/feeling_5_days_ago"/>
 
             <ImageView
@@ -91,6 +96,8 @@
                 android:id="@+id/fragment_chrono_text4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="@dimen/size_padding_textview"
                 android:text="@string/feeling_4_days_ago"/>
 
             <ImageView
@@ -113,6 +120,8 @@
                 android:id="@+id/fragment_chrono_text3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="@dimen/size_padding_textview"
                 android:text="@string/feeling_3_days_ago"/>
 
             <ImageView
@@ -136,6 +145,8 @@
                 android:id="@+id/fragment_chrono_text2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="@dimen/size_padding_textview"
                 android:text="@string/feeling_2_days_ago"/>
 
             <ImageView
@@ -158,6 +169,8 @@
                 android:id="@+id/fragment_chrono_text1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="@dimen/size_padding_textview"
                 android:text="@string/feeling_1_days_ago"/>
 
             <ImageView
@@ -172,4 +185,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

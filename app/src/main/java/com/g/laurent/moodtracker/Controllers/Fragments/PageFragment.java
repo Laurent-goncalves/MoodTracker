@@ -1,6 +1,8 @@
 package com.g.laurent.moodtracker.Controllers.Fragments;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,6 +20,8 @@ public class PageFragment extends Fragment implements Feelings {
     // 1 - Create keys for our Bundle
     private static final String KEY_POSITION="position";
     private static final String KEY_COLOR="color";
+    protected callbackMainActivity mCallbackMainActivity;
+    int position;
 
     public PageFragment() { }
 
@@ -39,21 +43,26 @@ public class PageFragment extends Fragment implements Feelings {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // 3 - Get layout of PageFragment
+        // Get layout of PageFragment
         View result = inflater.inflate(R.layout.fragment_page, container, false);
 
-        // 4 - Get widgets from layout and serialise it
+        // Get widgets from layout and serialise it
         ImageView image_feeling = (ImageView) result.findViewById(R.id.fragment_page_feeling);
-
         FrameLayout frameLayout = (FrameLayout) result.findViewById(R.id.fragment_page_back);
 
-        // 5 - Get data from Bundle (created in method newInstance)
-        int position = getArguments().getInt(KEY_POSITION, -1);
+        // Get data from Bundle (created in method newInstance)
+        position = getArguments().getInt(KEY_POSITION, -1);
         int color = getArguments().getInt(KEY_COLOR, -1);
+
+        image_feeling.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mCallbackMainActivity.save_temp_last_feeling(position);
+            }
+        });
 
         image_feeling.setImageResource(mFeelings[position]);
 
-        // 6 - Update widgets with it
+        // Update widgets with it
         frameLayout.setBackgroundColor(color);
 
         Log.e(getClass().getSimpleName(), "onCreateView called for fragment number "+position);
@@ -61,4 +70,25 @@ public class PageFragment extends Fragment implements Feelings {
 
     }
 
+
+    // ------ CALLBACK FOR MAIN ACTIVITY (used to send the feeling number selected by the user) ----------------
+    private void createCallbackToMainActivity(){
+        try {
+            // Parent activity will automatically subscribe to callback
+            mCallbackMainActivity = (callbackMainActivity) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(e.toString()+ " must implement callbackMainActivity");
+        }
+    }
+
+    public interface callbackMainActivity {
+        void save_temp_last_feeling(int position);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // Call the method that creating callback after being attached to parent activity
+        this.createCallbackToMainActivity();
+    }
 }

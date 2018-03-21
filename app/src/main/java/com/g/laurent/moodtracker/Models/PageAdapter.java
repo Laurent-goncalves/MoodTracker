@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.g.laurent.moodtracker.Controllers.Fragments.PageFragment;
 import com.g.laurent.moodtracker.R;
@@ -37,35 +38,4 @@ public class PageAdapter extends FragmentPagerAdapter {
         return(PageFragment.newInstance(position, this.colors[position]));
     }
 
-    /*
-    @Override
-    public Object instantiateItem(ViewGroup container, final int position) {
-
-        LayoutInflater inflater = (LayoutInflater) container.getContext()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
-        View page = inflater.inflate(R.layout.fragment_page, container, false);
-
-        page.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                //this will log the page number that was click
-                System.out.println("eeee cclclcicickckckckckc");
-            }
-        });
-
-
-        ((ViewPager) container).addView(page, 0);
-        return page;
-
-
-        /*container.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                //this will log the page number that was click
-                System.out.println("eeee cclclcicickckckckckc");
-            }
-        });
-
-        return super.instantiateItem(container, position);
-    }*/
 }
