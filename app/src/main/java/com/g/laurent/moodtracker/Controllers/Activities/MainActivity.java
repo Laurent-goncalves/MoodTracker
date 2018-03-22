@@ -16,6 +16,9 @@ import android.widget.LinearLayout;
 import com.g.laurent.moodtracker.Controllers.Fragments.PageFragment;
 import com.g.laurent.moodtracker.Models.PageAdapter;
 import com.g.laurent.moodtracker.R;
+
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -25,10 +28,11 @@ import butterknife.ButterKnife;
 
 import static java.lang.System.currentTimeMillis;
 
-public class MainActivity extends AppCompatActivity implements PageFragment.callbackMainActivity{
+public class MainActivity extends AppCompatActivity implements PageFragment.callbackMainActivity, PageFragment.callbackMainActivity_test{
 
     @BindView(R.id.activity_main_icon_comment) ImageView icon_com;
     @BindView(R.id.activity_main_icon_chrono) ImageView icon_chrono;
+
     private AlertDialog.Builder builder;
     private EditText input;
     private SharedPreferences sharedPreferences;
@@ -38,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
     private long last_date;
     private String last_comment;
     private boolean feeling_saved;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,12 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         feelings_saved = new HashMap<>();
         comments_saved= new HashMap<>();
         new_values();
+
+        last_feeling = 2;
+        last_date = currentTimeMillis() - 24 * 60 * 60 * 1000;
+        last_comment="tout premier commentaire!";
+        feeling_saved=false;
+
         // Configure ViewPager, button chronology and buttons comment
         this.configureChronoButton();
         this.configureCommentButton();
@@ -127,9 +136,37 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         // Get ViewPager from layout
         ViewPager pager = (ViewPager)findViewById(R.id.activity_main_viewpager);
         // Set Adapter PageAdapter and glue it together
-        pager.setAdapter(new PageAdapter(getSupportFragmentManager(), getResources().getIntArray(R.array.colorPagesViewPager)) {
+        pager.setAdapter(new PageAdapter(getSupportFragmentManager(),
+                getResources().getIntArray(R.array.colorPagesViewPager),selected(),comments()) {
         });
     }
+
+    private Boolean[] selected() {
+
+        int feeling_nb = getResources().getIntArray(R.array.colorPagesViewPager).length;
+        Boolean[] list_selected = new Boolean[feeling_nb];
+
+        for(int i = 0; i<feeling_nb;i++) {
+            list_selected[i] = i == last_feeling;
+        }
+        return list_selected;
+    }
+
+    private String[] comments() {
+
+        int feeling_nb = getResources().getIntArray(R.array.colorPagesViewPager).length;
+        String[] list_comments = new String[feeling_nb];
+
+            for(int i = 0; i<feeling_nb;i++) {
+                if(i == last_feeling)
+                    list_comments[i] = last_comment;
+                else
+                    list_comments[i] = null;
+            }
+
+        return list_comments;
+    }
+
 
     // ------- RECOVER DATA FROM SHAREDPREFERRENCES ----------
 
@@ -150,27 +187,38 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
     private void save_chronology_in_sharedpreferrences(){
 
-        if(!feeling_saved) { // if the last feeling has not been saved
+        if(!feeling_saved && feelings_saved!=null) { // if the last feeling has not been saved
 
             // we recover the data saved
             recover_feelings_and_comments_saved();
 
-            // Save the last feeling in sharedpreferences
-            save_in_sharedpreferrences(0,last_feeling,last_comment,last_date);
+            //display_data_saved();
+
+            String last_date_string = DateFormat.format("dd/MM/yyyy", new Date(last_date)).toString();
 
             // Save all other feelings that can be saved (need to shift the dates)
-            for(int i=1;i<7;i++) {
+            for(int i=1;i<=7;i++) {
 
-                String date_feeling = DateFormat.format("dd/MM/yyyy", new Date(last_date-24*60*60*1000*i)).toString();
+                String date_feeling = DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000*i)).toString();
 
-                if(feelings_saved.get(date_feeling)!=-1) // if the feeling is saved in sharedpreferences at the date "date_feeling"
+                if(feelings_saved.get(date_feeling)!=null) // if the feeling is saved in sharedpreferences at the date "date_feeling"
                     // save the feeling, the comment and the date "i"
-                    save_in_sharedpreferrences(i,feelings_saved.get(date_feeling),comments_saved.get(date_feeling),last_date - 24 * 60 * 60 * 1000 * i);
+                    save_in_sharedpreferrences(i-1,feelings_saved.get(date_feeling),comments_saved.get(date_feeling),currentTimeMillis() - 24 * 60 * 60 * 1000 * i);
 
-                else // save as null for the day "i"
-                    save_in_sharedpreferrences(i,-1,null,last_date - 24 * 60 * 60 * 1000 * i);
+                else if (date_feeling.equals(last_date_string))
+                    save_in_sharedpreferrences(i-1, last_feeling, last_comment, last_date);
+                else
+                    save_in_sharedpreferrences(i-1,-1,null,currentTimeMillis() - 24 * 60 * 60 * 1000 * i);
+
 
             }
+
+            recover_feelings_and_comments_saved();
+
+           // display_data_saved();
+            /*System.out.println("eeee START OF RECOVER FEELING");
+            recover_feelings_and_comments_saved();
+            System.out.println("eeee END OF RECOVER FEELING");*/
         }
 
         // The values are reset
@@ -178,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         this.last_comment = null;
         this.last_date = 0;
         this.last_feeling = -1;
+
     }
 
     private void save_in_sharedpreferrences(int position, int feeling, String comment, Long date){
@@ -195,6 +244,9 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         this.last_feeling=position;
         this.last_date = currentTimeMillis() ;
         this.feeling_saved=false;
+
+
+
     }
 
     // ------- WHEN THE ACTIVITY REOPENS, CHECK IF DATA CAN BE SAVED -----------
@@ -206,15 +258,41 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         String date_to_compare = (new Date(last_date)).toString();
 
         // if the last_date is different than today's date, the data can be saved in sharedpreferences
-        if(!date_to_compare.equals(date_today) && last_date != 0) {
+        if(!date_to_compare.equals(date_today) && last_date != 0)
             save_chronology_in_sharedpreferrences();
+    }
+
+
+    private void display_data_saved(){
+
+        System.out.println("eeeed -------------------------------------------------------------");
+        for(int i = 0;i<=6;i++) {
+            Long date_feeling_long = sharedPreferences.getLong("DATE_TIME_" + i, 0);
+            String date_feeling = DateFormat.format("dd/MM/yyyy", new Date(date_feeling_long)).toString();
+
+            System.out.println("eeeedd " + i + " " + date_feeling + "  " + feelings_saved.get(date_feeling) + "   " + comments_saved.get(date_feeling));
         }
+        System.out.println("eeeed -------------------------------------------------------------");
     }
 
     private void new_values() {
 
-    for(int i = 0;i<=6;i++)
-        save_in_sharedpreferrences(i,-1,null,new GregorianCalendar(2018,3,18-i).getTimeInMillis());
+        int last = 17;
+
+        save_in_sharedpreferrences(0,1,"commentaire1",new GregorianCalendar(2018,2,last).getTimeInMillis());
+        save_in_sharedpreferrences(1,1,"commentaire2",new GregorianCalendar(2018,2,last-1).getTimeInMillis());
+        save_in_sharedpreferrences(2,3,null,new GregorianCalendar(2018,2,last-2).getTimeInMillis());
+        save_in_sharedpreferrences(3,2,null,new GregorianCalendar(2018,2,last-3).getTimeInMillis());
+        save_in_sharedpreferrences(4,4,null,new GregorianCalendar(2018,2,last-4).getTimeInMillis());
+        save_in_sharedpreferrences(5,2,"avant dernier commentaire",new GregorianCalendar(2018,2,last-5).getTimeInMillis());
+        save_in_sharedpreferrences(6,1,"dernier commentaire",new GregorianCalendar(2018,2,last-6).getTimeInMillis());
+    }
+
+    @Override
+    public void display_test() {
+
+
+        System.out.println("eeee88 " + last_feeling + "  " + last_date+ "  " + feeling_saved);
 
     }
 }

@@ -35,6 +35,8 @@ public class ChronoFragment extends Fragment {
 
     List<ImageView> mImageViews;
 
+
+
     private SharedPreferences sharedPreferences;
     private int position;
     private String comment;
