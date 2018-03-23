@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         comments_saved= new HashMap<>();
         new_values();
 
+
+
         last_feeling = 2;
         last_date = currentTimeMillis() - 24 * 60 * 60 * 1000;
         last_comment="tout premier commentaire!";
@@ -65,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         this.configureChronoButton();
         this.configureCommentButton();
         this.configureViewPager();
+
+        //getStatusBarHeight();
     }
 
     // ------- CONFIGURATION ----------
@@ -215,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
             recover_feelings_and_comments_saved();
 
-           // display_data_saved();
+            //display_data_saved();
             /*System.out.println("eeee START OF RECOVER FEELING");
             recover_feelings_and_comments_saved();
             System.out.println("eeee END OF RECOVER FEELING");*/
@@ -277,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
     private void new_values() {
 
-        int last = 17;
+        int last = 21;
 
         save_in_sharedpreferrences(0,1,"commentaire1",new GregorianCalendar(2018,2,last).getTimeInMillis());
         save_in_sharedpreferrences(1,1,"commentaire2",new GregorianCalendar(2018,2,last-1).getTimeInMillis());
@@ -287,6 +293,9 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         save_in_sharedpreferrences(5,2,"avant dernier commentaire",new GregorianCalendar(2018,2,last-5).getTimeInMillis());
         save_in_sharedpreferrences(6,1,"dernier commentaire",new GregorianCalendar(2018,2,last-6).getTimeInMillis());
     }
+
+
+
 
     @Override
     public void display_test() {

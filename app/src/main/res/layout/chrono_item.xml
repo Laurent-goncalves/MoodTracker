@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+
+    android:id="@+id/relative_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/fragment_chrono_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:padding="@dimen/size_padding_textview" />
+
+    <ImageView
+        android:id="@+id/fragment_chrono_comment"
+        android:layout_below="@+id/fragment_chrono_text"
+        android:layout_alignEnd="@+id/fragment_chrono_text"
+        android:padding="@dimen/size_padding_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

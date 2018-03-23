@@ -67,7 +67,7 @@ public class PageFragment extends Fragment implements Feelings {
         String comment = getArguments().getString(KEY_COMMENT, null);
         Boolean selected = getArguments().getBoolean(KEY_IS_SELECTED,false);
 
-        final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.ukulele);
+        final MediaPlayer mp = MediaPlayer.create(getContext(), mSounds[position]);
 
         image_feeling.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

@@ -4,7 +4,6 @@ import com.g.laurent.moodtracker.R;
 
 public interface Feelings {
 
-    // references to our images
     Integer[] mFeelings = {
             R.drawable.smiley_sad,
             R.drawable.smiley_disappointed,
@@ -13,6 +12,13 @@ public interface Feelings {
             R.drawable.smiley_super_happy
     };
 
+    Integer[] mSounds = {
+            R.raw.ukulele,
+            R.raw.djembe,
+            R.raw.marimba,
+            R.raw.batterie,
+            R.raw.guitare
+    };
 
 
 }
