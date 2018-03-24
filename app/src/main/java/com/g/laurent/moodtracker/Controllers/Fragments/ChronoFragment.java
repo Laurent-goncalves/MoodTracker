@@ -47,17 +47,12 @@ public class ChronoFragment extends Fragment {
         colors = getResources().getIntArray(R.array.colorPagesViewPager);
         chrono_texts = getResources().getStringArray(R.array.text_chrono_list);
 
-
-
         recover_data_chrono();
+
         // For each day in sharedpreferences, adjust the linearlayout and the icon comment
         create_layout_chronofragment();
 
-
-        if(container.findViewById(Window.ID_ANDROID_CONTENT)==null)
-            System.out.println("eeee window");
-
-        System.out.println("eeee " + container.findViewById(Window.ID_ANDROID_CONTENT).getTop());
+        //System.out.println("eeee " + container.findViewById(Window.ID_ANDROID_CONTENT).getTop());
 
         // Inflate the layout for this fragment
         return view;
@@ -74,8 +69,8 @@ public class ChronoFragment extends Fragment {
             table_positions = new HashMap<>();
 
             // Creation of HashMap table to have the relation between dates and position on the listview
-            for (int i = chrono_texts.length-1; i >= 0; i--)
-                table_positions.put(DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000*i)).toString(),i);
+            for (int i = 1; i <= chrono_texts.length; i++)
+                table_positions.put(DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000*i)).toString(),chrono_texts.length-i);
 
             // Data recovering
             if (sharedPreferences != null) {
@@ -87,12 +82,12 @@ public class ChronoFragment extends Fragment {
                     String mDateTime = DateFormat.format("dd/MM/yyyy", new Date(sharedPreferences.getLong("DATE_TIME_" + i, 0))).toString();
 
                     if (table_positions.get(mDateTime)!=null) { // if the date is found in the table
-
                         int position = table_positions.get(mDateTime);
                         list_comments[position]=comment;
                         list_feelings[position]=feeling_number;
                     }
                 }
+
             }
         }
     }
@@ -105,6 +100,7 @@ public class ChronoFragment extends Fragment {
         //System.out.println("eeee " + screen_height);
 
         if(colors.length>0 && list_feelings.length>0){
+
             final ListViewAdapter adapter = new ListViewAdapter(
                     getContext(), chrono_texts,list_comments,list_feelings,colors,screen_width,screen_height);
 

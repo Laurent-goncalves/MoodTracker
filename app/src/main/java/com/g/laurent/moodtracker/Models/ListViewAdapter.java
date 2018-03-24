@@ -34,7 +34,6 @@ public class ListViewAdapter extends BaseAdapter {
         this.screen_height=screen_height;
     }
 
-
     @Override
     public int getCount() {
         return texts_chrono.length;
@@ -63,21 +62,21 @@ public class ListViewAdapter extends BaseAdapter {
             viewHolder = new ListViewHolder();
 
             // RELATIVELAYOUT
+            viewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.relative_layout);
+            viewHolder.mRelativeLayout.getLayoutParams().height = screen_height / 7;
 
             if(feelings[position]!=-1){
 
-                viewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.relative_layout);
                 viewHolder.mRelativeLayout.setBackgroundColor(colors[feelings[position]]);
                 viewHolder.mRelativeLayout.getLayoutParams().width = (1 + feelings[position]) * screen_width / 5;
-                viewHolder.mRelativeLayout.getLayoutParams().height = screen_height / 7;
 
-                //TEXTVIEW
+                // TEXTVIEW
                 viewHolder.mTextView = (TextView) convertView.findViewById(R.id.fragment_chrono_text);
                 viewHolder.mTextView.setText(texts_chrono[position]);
 
                 final String comment = texts_comment[position];
 
-                //IMAGEVIEW
+                // IMAGEVIEW
                 if (comment != null) {
                     viewHolder.mImageView = (ImageView) convertView.findViewById(R.id.fragment_chrono_comment);
                     viewHolder.mImageView.setImageResource(R.drawable.ic_comment_black_48px);
@@ -89,12 +88,10 @@ public class ListViewAdapter extends BaseAdapter {
                         }
                     });
                 }
-            } else {
-                viewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.relative_layout);
-                viewHolder.mRelativeLayout.setBackgroundColor(Color.BLACK);
-                viewHolder.mRelativeLayout.getLayoutParams().width = (1 + feelings[position]) * screen_width / 5;
-            }
+            } else
+                viewHolder.mRelativeLayout.getLayoutParams().width = 0;
         }
+
         return convertView;
     }
 
