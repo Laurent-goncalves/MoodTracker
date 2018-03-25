@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.g.laurent.moodtracker.Models.ListViewAdapter;
 import com.g.laurent.moodtracker.R;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import static java.lang.System.currentTimeMillis;
@@ -29,7 +31,7 @@ public class ChronoFragment extends Fragment {
     private ListView mListView;
     private String[] list_comments;
     private int[] list_feelings;
-    private HashMap<String,Integer> table_positions;
+    private ArrayList<String> table_positions;
 
     public ChronoFragment() { }
 
@@ -59,6 +61,10 @@ public class ChronoFragment extends Fragment {
 
     }
 
+    private String create_date_ddMMyyyy(Long date){
+        return DateFormat.format("dd/MM/yyyy", new Date(date)).toString();
+    }
+
     private void recover_data_chrono(){
 
         if(chrono_texts.length>0){
@@ -66,28 +72,33 @@ public class ChronoFragment extends Fragment {
             // Initialization
             list_comments = new String[chrono_texts.length];
             list_feelings = new int[chrono_texts.length];
-            table_positions = new HashMap<>();
+            table_positions = new ArrayList<>();
+            int limit = chrono_texts.length-1;
 
-            // Creation of HashMap table to have the relation between dates and position on the listview
-            for (int i = 1; i <= chrono_texts.length; i++)
-                table_positions.put(DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000*i)).toString(),chrono_texts.length-i);
+            // Creation of an ArrayList to get all dates to be considered for the chronology
+            for (int i = limit+1; i >= 1 ; i--)
+                table_positions.add(create_date_ddMMyyyy(currentTimeMillis()-24*60*60*1000*i));
 
             // Data recovering
             if (sharedPreferences != null) {
 
-                for (int i = chrono_texts.length-1; i >= 0; i--) {
+                for (int i = limit; i >= 0; i--) { // for each date considered
 
-                    int feeling_number = sharedPreferences.getInt("FEELING_" + i, -1);
-                    String comment = sharedPreferences.getString("COMMENT_" + i, null);
-                    String mDateTime = DateFormat.format("dd/MM/yyyy", new Date(sharedPreferences.getLong("DATE_TIME_" + i, 0))).toString();
+                    for(int j=0; j<= limit; j++){ // check in sharedpreferences if the date appears in sharedpref
 
-                    if (table_positions.get(mDateTime)!=null) { // if the date is found in the table
-                        int position = table_positions.get(mDateTime);
-                        list_comments[position]=comment;
-                        list_feelings[position]=feeling_number;
+                        String mDateTime = create_date_ddMMyyyy(sharedPreferences.getLong("DATE_TIME_" + j, 0));
+
+                        if(mDateTime.equals(table_positions.get(i))){ // if the date appears in sharedpref
+                            list_comments[i]=sharedPreferences.getString("COMMENT_" + j, null);
+                            list_feelings[i]=sharedPreferences.getInt("FEELING_" + j, -1);
+                            break;
+                        } else if (j==limit){ // if the date doesn't appear in sharedpref
+                            list_comments[i]=null;
+                            list_feelings[i]=-1;
+                            break;
+                        }
                     }
                 }
-
             }
         }
     }
@@ -96,8 +107,6 @@ public class ChronoFragment extends Fragment {
 
         int screen_width = this.getResources().getDisplayMetrics().widthPixels;
         int screen_height= this.getResources().getDisplayMetrics().heightPixels - getToolBarHeight();
-
-        //System.out.println("eeee " + screen_height);
 
         if(colors.length>0 && list_feelings.length>0){
 
@@ -120,19 +129,6 @@ public class ChronoFragment extends Fragment {
         return toolBarHeight;
     }
 
-    /*public int getStatusBarHeight() {
-        Rect rectangle = new Rect();
-        Window window = getWindow();
-        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
-        int statusBarHeight = rectangle.top;
-        int contentViewTop = window.findViewById(Window.ID_ANDROID_CONTENT).getTop();
-        int titleBarHeight = contentViewTop - statusBarHeight;
-
-        System.out.println("eeee contentViewTop=" + contentViewTop);
-        System.out.println("eeee titleBarHeight=" + titleBarHeight);
-
-        return titleBarHeight;
-    }*/
 }
 
 
@@ -141,7 +137,41 @@ public class ChronoFragment extends Fragment {
 
 
 
+/* if(chrono_texts.length>0){
 
+            // Initialization
+            list_comments = new String[chrono_texts.length];
+            list_feelings = new int[chrono_texts.length];
+            table_positions = new HashMap<>();
+
+            // Creation of HashMap table to get all dates saved in sharedpreferences
+            for (int i = 1; i <= chrono_texts.length; i++)
+                table_positions.put(DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000*i)).toString(),chrono_texts.length-i);
+
+            // System.out.println("eeeee " + table_positions.toString());
+
+            // Data recovering
+            if (sharedPreferences != null) {
+
+                for (int i = chrono_texts.length-1; i >= 0; i--) {
+
+                    int feeling_number = sharedPreferences.getInt("FEELING_" + i, -1);
+                    String comment = sharedPreferences.getString("COMMENT_" + i, null);
+                    String mDateTime = DateFormat.format("dd/MM/yyyy", new Date(sharedPreferences.getLong("DATE_TIME_" + i, 0))).toString();
+
+                    System.out.println("eeeee     i=" + i + "    feeling_number=" + feeling_number);
+
+                    if (table_positions.get(mDateTime)!=null) { // if there is a date associated to a feeling in sharedpreferences
+                        int position = table_positions.get(mDateTime);
+                        list_comments[position]=comment;
+                        list_feelings[position]=feeling_number;
+                    } else {
+
+
+                    }
+                }
+            }
+            */
 
 
 

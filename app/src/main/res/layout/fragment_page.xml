@@ -1,38 +1,49 @@
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_page_back"
-    tools:context="com.g.laurent.moodtracker.Controllers.Fragments.PageFragment"
-    android:orientation="vertical">
+    tools:context="com.g.laurent.moodtracker.Controllers.Fragments.PageFragment">
 
 
-    <FrameLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/fragment_page_feeling"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/fragment_green_circle"/>
-
-    </FrameLayout>
-
-    <TextView
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/fragment_comment"/>
+        android:layout_gravity="center">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/framelayout_feeling"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_page_feeling"
+                android:layout_gravity="center"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_green_circle"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_marginTop="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/framelayout_feeling"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:id="@+id/fragment_comment"/>
+
+    </RelativeLayout>
 
 
-
-</LinearLayout>
+</FrameLayout>

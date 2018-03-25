@@ -2,53 +2,53 @@ package com.g.laurent.moodtracker.Controllers.Fragments;
 
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.g.laurent.moodtracker.Models.Feelings;
 import com.g.laurent.moodtracker.R;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PageFragment extends Fragment implements Feelings {
 
-    // 1 - Create keys for our Bundle
+    // Create BindViews
     @BindView(R.id.fragment_green_circle) ImageView green_circle;
     @BindView(R.id.fragment_comment) TextView commentView;
     @BindView(R.id.fragment_page_feeling) ImageView image_feeling;
-    @BindView(R.id.fragment_page_back) LinearLayout linearLayout;
+    @BindView(R.id.fragment_page_back) FrameLayout frameLayout;
 
+    // Create keys for the Bundle
     private static final String KEY_POSITION="position";
     private static final String KEY_COLOR="color";
     private static final String KEY_LAST_FEELING="feeling";
     private static final String KEY_LAST_COMMENT="comment";
+
+    // Declaration of a callbackMainActivity
     protected callbackMainActivity mCallbackMainActivity;
-    protected callbackMainActivity_test mCallbackMainActivity_test;
+
+    // Declaration variables
+    private int position;
+    private int color;
     private int last_feeling;
     private String last_comment;
-    private SharedPreferences sharedPreferences;
 
     public PageFragment() { }
 
-    // 2 - Method that will create a new instance of PageFragment, and add data to its bundle.
-    public static PageFragment newInstance(int position, int color, int last_feeling, String last_comment, Bundle args) {
+    public static PageFragment newInstance(int position, int color, int last_feeling, String last_comment) {
 
-        // 2.1 Create new fragment
+            // Method that will create a new instance of PageFragment, and add data to its bundle.
+        // Creation of a new fragment
         PageFragment frag = new PageFragment();
 
-        // 2.2 Create bundle and add it some data
+        // Creation of the bundle ; some data are added to the bundle
+        Bundle args = new Bundle();
         args.putInt(KEY_POSITION, position);
         args.putInt(KEY_COLOR, color);
         args.putInt(KEY_LAST_FEELING,last_feeling);
@@ -56,7 +56,6 @@ public class PageFragment extends Fragment implements Feelings {
         frag.setArguments(args);
 
         return(frag);
-
     }
 
     @Override
@@ -65,51 +64,53 @@ public class PageFragment extends Fragment implements Feelings {
         View view = inflater.inflate(R.layout.fragment_page, container, false);
         ButterKnife.bind(this, view);
 
-        sharedPreferences = getContext().getSharedPreferences("chrono", Context.MODE_PRIVATE);
-
         // Get data from Bundle (created in method newInstance)
-        final int position = getArguments().getInt(KEY_POSITION, -1);
-        int color = getArguments().getInt(KEY_COLOR, -1);
+        position = getArguments().getInt(KEY_POSITION, -1);
+        color = getArguments().getInt(KEY_COLOR, -1);
+        last_feeling= getArguments().getInt(KEY_LAST_FEELING, -1);
+        last_comment= getArguments().getString(KEY_LAST_COMMENT, null);
 
-        if(sharedPreferences!=null){
-            last_feeling = sharedPreferences.getInt("FEELING_-1", -1);
-            last_comment = sharedPreferences.getString("COMMENT_-1",null);
-        } else {
-            last_feeling=-1;
-            last_comment=null;
-        }
+        update_image_feeling_and_framelayout();
+        update_commentView();
+        update_green_circle();
 
+        return view;
+    }
 
+    private void update_image_feeling_and_framelayout(){
 
-
+        // IMAGEVIEW update and adding of a click listener
         image_feeling.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 green_circle.setImageResource(R.drawable.cercle_vert);
                 final MediaPlayer mp = MediaPlayer.create(getContext(), mSounds[position]);
                 mp.start();
-                mCallbackMainActivity.save_temp_last_feeling(position);
+                mCallbackMainActivity.save_temp_last_feeling(position,commentView.getText().toString());
             }
         });
 
-
-
-        // Draw imageView
+        // FRAMELAYOUT update
         image_feeling.setImageResource(mFeelings[position]);
-        linearLayout.setBackgroundColor(color);
-
-        System.out.println("eeeee11 " + position + "  " + last_feeling + "  " + last_comment);
-
-        if(last_feeling == position) {
-            System.out.println("eeeee22 " + position + "  " + last_feeling + "  " + last_comment);
-            green_circle.setImageResource(R.drawable.cercle_vert);
-            commentView.setText(last_comment);
-        }
-
-        Log.e(getClass().getSimpleName(), "onCreateView called for fragment number "+position);
-        return view;
-
+        frameLayout.setBackgroundColor(color);
     }
 
+    private void update_commentView() {
+        if (commentView != null) {
+            if (position == last_feeling && last_comment != null)
+                commentView.setText(last_comment);
+            else
+                commentView.setText(null);
+        }
+    }
+
+    private void update_green_circle(){
+        if(green_circle!=null) {
+            if(last_feeling == position)
+                green_circle.setImageResource(R.drawable.cercle_vert);
+            else
+                green_circle.setImageResource(0);
+        }
+    }
 
     // ------ CALLBACK FOR MAIN ACTIVITY (used to send the feeling number selected by the user) ----------------
     private void createCallbackToMainActivity(){
@@ -122,36 +123,7 @@ public class PageFragment extends Fragment implements Feelings {
     }
 
     public interface callbackMainActivity {
-        void save_temp_last_feeling(int position);
-    }
-
-    public void updateView() {
-
-        final int position = getArguments().getInt(KEY_POSITION, -1);
-
-
-        if(sharedPreferences!=null){
-            last_feeling = sharedPreferences.getInt("FEELING_-1", -1);
-            last_comment = sharedPreferences.getString("COMMENT_-1",null);
-        } else {
-            last_feeling=-1;
-            last_comment=null;
-        }
-
-       /* int last_feeling = getArguments().getInt(KEY_LAST_FEELING, -1);
-        String last_comment = getArguments().getString(KEY_LAST_FEELING,null);*/
-
-        System.out.println("eeeeeff " + position + "  " + last_feeling + "  " + last_comment);
-
-        if(last_feeling == position) {
-            green_circle.setImageResource(R.drawable.cercle_vert);
-            commentView.setText(last_comment);
-        } else {
-            if(green_circle!=null)
-                green_circle.setImageResource(0);
-            if(commentView!=null)
-                commentView.setText(null);
-        }
+        void save_temp_last_feeling(int position, String comment);
     }
 
     @Override
@@ -159,29 +131,6 @@ public class PageFragment extends Fragment implements Feelings {
         super.onAttach(context);
         // Call the method that creating callback after being attached to parent activity
         this.createCallbackToMainActivity();
-        this.createCallbackToMainActivity_test();
-    }
-
-    public void update_textview(String comment){
-        commentView.setText(comment);
-    }
-
-    private void createCallbackToMainActivity_test(){
-        try {
-            // Parent activity will automatically subscribe to callback
-            mCallbackMainActivity_test = (callbackMainActivity_test) getActivity();
-        } catch (ClassCastException e) {
-            throw new ClassCastException(e.toString()+ " must implement callbackMainActivity_test");
-        }
-    }
-
-    public interface callbackMainActivity_test {
-        void display_test();
     }
 
 }
-        /*test_imageview.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mCallbackMainActivity_test.display_test();
-            }
-        });*/
