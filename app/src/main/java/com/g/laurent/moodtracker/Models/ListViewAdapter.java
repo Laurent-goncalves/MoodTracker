@@ -6,25 +6,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.g.laurent.moodtracker.R;
 import com.g.laurent.moodtracker.Views.ListViewHolder;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class ListViewAdapter extends BaseAdapter {
 
     private Context context;
+    private TextView comment_view;
+    private FrameLayout mFrameLayout;
     private String[] texts_chrono;
     private String[] texts_comment;
     private int[] feelings;
     private int[] colors;
     private int screen_width;
     private int screen_height;
+    private View view;
+    @BindView(R.id.toast_custom_layout) TextView convert_view;
 
     public ListViewAdapter(Context context, String[] texts_chrono,String[] texts_comment ,int[] feelings, int[] colors, int screen_width, int screen_height){
+
         this.context=context;
         this.texts_chrono=texts_chrono;
         this.texts_comment=texts_comment;
@@ -57,7 +67,18 @@ public class ListViewAdapter extends BaseAdapter {
                     inflate(R.layout.chrono_item, parent, false);
         }
 
+
+
+
+
         ListViewHolder viewHolder = (ListViewHolder) convertView.getTag();
+
+
+        view = LayoutInflater.from(context).inflate(R.layout.custom_toast, null);
+        mFrameLayout= view.findViewById(R.id.toast_custom_layout);
+        comment_view=view.findViewById(R.id.toast_custom_textview);
+
+
         if (viewHolder == null) {
             viewHolder = new ListViewHolder();
 
@@ -83,7 +104,12 @@ public class ListViewAdapter extends BaseAdapter {
                     viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast toast = Toast.makeText(context, comment, Toast.LENGTH_SHORT);
+
+
+                            comment_view.setText(comment);
+                            Toast toast = new Toast(v.getContext());
+                            toast.setView(mFrameLayout);
+                            toast.setDuration(Toast.LENGTH_SHORT);
                             toast.show();
                         }
                     });
@@ -96,3 +122,4 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
 }
+

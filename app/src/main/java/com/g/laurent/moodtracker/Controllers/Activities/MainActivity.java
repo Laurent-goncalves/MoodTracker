@@ -1,10 +1,14 @@
 package com.g.laurent.moodtracker.Controllers.Activities;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +20,8 @@ import android.widget.LinearLayout;
 import com.g.laurent.moodtracker.Controllers.Fragments.PageFragment;
 import com.g.laurent.moodtracker.Models.PageAdapter;
 import com.g.laurent.moodtracker.R;
+
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -45,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
     private PageAdapter page_adapter;
     private Bundle bundle;
 
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,8 +65,10 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         // Recover sharedpreferences
         sharedPreferences = this.getSharedPreferences("chrono", Context.MODE_PRIVATE);
 
+
         // Initialize variants
         fragment_number = 0;
+        bundle = new Bundle();
         recover_data_saved(savedInstanceState);
         chrono_texts = getResources().getStringArray(R.array.text_chrono_list);
         new_values();
@@ -69,9 +81,29 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         this.configure_page_adapter(fragment_number,last_feeling, last_comment);
         display_data_saved();
 
+
+        // SETTING THE ALARM
+        alarmMgr = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), MyReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+        // Set the alarm to start at 0:00 AM
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY,23);
+        calendar.set(Calendar.MINUTE, 59);
+
+        // setRepeating() lets you specify a precise custom interval--in this case,
+        // 1 day
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+
+
        // display_data_saved();
 
     }
+
+
 
     // ------- CONFIGURATION ----------
 
@@ -233,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
     private void save_chronology_in_sharedpreferrences(){
 
-        if(last_feeling !=-1 && feelings_saved!=null) { // if the last feeling has not been saved
+        if(last_feeling !=-1) { // if the last feeling has not been saved
 
             // we recover the data saved
             recover_feelings_and_comments_saved();
@@ -281,12 +313,19 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
     protected void onResume() {
         super.onResume();
 
+        System.out.println("eeeee onResume : last_feeling =" + last_feeling + "    last_comment=" + last_comment);
+
         String date_today = (new Date(currentTimeMillis())).toString();
         String date_to_compare = (new Date(last_date)).toString();
 
+        System.out.println("eeeee onResume : date_today =" + date_today + "    date_to_compare=" + date_to_compare);
+
         // if the last_date is different than today's date, the data can be saved in sharedpreferences
-        if(!date_to_compare.equals(date_today) && last_date != 0)
+        if(!date_to_compare.equals(date_today) && last_date != 0) {
             save_chronology_in_sharedpreferrences();
+            System.out.println("eeeee save_chronology_in_sharedpreferrences");
+        }
+
 
     }
 
@@ -305,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
         bundle.putInt(BUNDLE_STATE_LAST_FEELING, last_feeling);
         bundle.putString(BUNDLE_STATE_LAST_COMMENT, last_comment);
-        System.out.println("eeeee stopppppppedddddddddd");
+        System.out.println("eeeee stopped : last_feeling =" + last_feeling + "    last_comment=" + last_comment);
     }
 
 
@@ -313,10 +352,10 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
     protected void onRestart() {
         super.onRestart();
 
-        System.out.println("eeeee onrestart");
-
         last_feeling=bundle.getInt(BUNDLE_STATE_LAST_FEELING);
         last_comment=bundle.getString(BUNDLE_STATE_LAST_COMMENT);
+
+        System.out.println("eeeee onrestart : last_feeling =" + last_feeling + "    last_comment=" + last_comment);
 
         page_adapter = new PageAdapter(getSupportFragmentManager(),
                 getResources().getIntArray(R.array.colorPagesViewPager),last_feeling,last_comment);
@@ -325,7 +364,6 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
             pager.setAdapter(page_adapter);
             pager.setCurrentItem(0);
         }
-
     }
 
     private void display_data_saved(){
@@ -344,16 +382,17 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
     private void new_values() {
 
-        int last = 15;
+        int last = 27;
 
         save_in_sharedpreferrences(0,1,"commentaire1",new GregorianCalendar(2018,2,last).getTimeInMillis());
         save_in_sharedpreferrences(1,-1,null,new GregorianCalendar(2018,2,last-1).getTimeInMillis());
         save_in_sharedpreferrences(2,3,null,new GregorianCalendar(2018,2,last-2).getTimeInMillis());
-        save_in_sharedpreferrences(3,4,"teststststst",new GregorianCalendar(2018,2,last-3).getTimeInMillis());
+        save_in_sharedpreferrences(3,4,"il a plu toute la journée...",new GregorianCalendar(2018,2,last-3).getTimeInMillis());
         save_in_sharedpreferrences(4,-1,null,new GregorianCalendar(2018,2,last-4).getTimeInMillis());
-        save_in_sharedpreferrences(5,2,"avant dernier commentaire",new GregorianCalendar(2018,2,last-5).getTimeInMillis());
-        save_in_sharedpreferrences(6,1,"dernier commentaire",new GregorianCalendar(2018,2,last-6).getTimeInMillis());
+        save_in_sharedpreferrences(5,2,"il fait beau",new GregorianCalendar(2018,2,last-5).getTimeInMillis());
+        save_in_sharedpreferrences(6,1,"y'a plus rien dans le frigo !!",new GregorianCalendar(2018,2,last-6).getTimeInMillis());
     }
 
 
 }
+

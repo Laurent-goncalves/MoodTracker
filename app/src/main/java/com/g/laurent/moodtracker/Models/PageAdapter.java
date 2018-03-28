@@ -2,12 +2,13 @@ package com.g.laurent.moodtracker.Models;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import com.g.laurent.moodtracker.Controllers.Fragments.PageFragment;
 
 
-public class PageAdapter extends FragmentStatePagerAdapter {
+public class PageAdapter extends FragmentPagerAdapter {
 
     private int[] colors;
     private int last_feeling;

@@ -82,7 +82,7 @@ public class PageFragment extends Fragment implements Feelings {
         // IMAGEVIEW update and adding of a click listener
         image_feeling.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                green_circle.setImageResource(R.drawable.cercle_vert);
+                green_circle.setImageResource(R.drawable.cerclevert);
                 final MediaPlayer mp = MediaPlayer.create(getContext(), mSounds[position]);
                 mp.start();
                 mCallbackMainActivity.save_temp_last_feeling(position,commentView.getText().toString());
@@ -106,7 +106,7 @@ public class PageFragment extends Fragment implements Feelings {
     private void update_green_circle(){
         if(green_circle!=null) {
             if(last_feeling == position)
-                green_circle.setImageResource(R.drawable.cercle_vert);
+                green_circle.setImageResource(R.drawable.cerclevert);
             else
                 green_circle.setImageResource(0);
         }

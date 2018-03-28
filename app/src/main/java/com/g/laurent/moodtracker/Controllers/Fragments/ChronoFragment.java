@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.g.laurent.moodtracker.Models.ListViewAdapter;
 import com.g.laurent.moodtracker.R;
@@ -67,6 +68,7 @@ public class ChronoFragment extends Fragment {
 
     private void recover_data_chrono(){
 
+
         if(chrono_texts.length>0){
 
             // Initialization
@@ -78,6 +80,8 @@ public class ChronoFragment extends Fragment {
             // Creation of an ArrayList to get all dates to be considered for the chronology
             for (int i = limit+1; i >= 1 ; i--)
                 table_positions.add(create_date_ddMMyyyy(currentTimeMillis()-24*60*60*1000*i));
+
+            display_data();
 
             // Data recovering
             if (sharedPreferences != null) {
@@ -103,10 +107,20 @@ public class ChronoFragment extends Fragment {
         }
     }
 
+
+    private void display_data(){
+        for(int j = 0; j<=6;j++)
+        System.out.println("eeee table positions =" + table_positions.get(j));
+
+    }
+
+
     private void create_layout_chronofragment(){
 
         int screen_width = this.getResources().getDisplayMetrics().widthPixels;
         int screen_height= this.getResources().getDisplayMetrics().heightPixels - getToolBarHeight();
+
+        System.out.println("eeee " + list_feelings[0] + " " + list_feelings[1] + " " + list_feelings[2] + " " +list_feelings[3] + " " +list_feelings[4] + " " +list_feelings[5] + " " +list_feelings[6]  );
 
         if(colors.length>0 && list_feelings.length>0){
 
@@ -115,6 +129,7 @@ public class ChronoFragment extends Fragment {
 
             mListView.setAdapter(adapter);
         } else {
+
             Toast toast = Toast.makeText(getContext(), "Aucune chronologie !", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
