@@ -104,6 +104,7 @@ public class PageFragment extends Fragment implements Feelings {
     }
 
     private void update_green_circle(){
+
         if(green_circle!=null) {
             if(last_feeling == position)
                 green_circle.setImageResource(R.drawable.cerclevert);

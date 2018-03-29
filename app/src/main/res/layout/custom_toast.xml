@@ -9,7 +9,7 @@
         android:id="@+id/toast_custom_textview"
         android:layout_gravity="bottom"
         android:layout_width="300dp"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:background="#2E2E2E"
         android:textColor="#FFFFFF"
         android:shadowColor="#A4A4A4"/>

@@ -8,7 +8,7 @@ import android.support.v4.view.PagerAdapter;
 import com.g.laurent.moodtracker.Controllers.Fragments.PageFragment;
 
 
-public class PageAdapter extends FragmentPagerAdapter {
+public class PageAdapter extends FragmentStatePagerAdapter {
 
     private int[] colors;
     private int last_feeling;

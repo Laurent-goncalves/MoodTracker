@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.g.laurent.moodtracker">
 
+    <uses-permission android:name="com.android.alarm.permission.SET_TIME"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
 
@@ -11,7 +14,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".Controllers.Activities.MyReceiver" />
+
+        <receiver android:name=".Controllers.Activities.MyReceiver"
+            android:enabled="false"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
+
 
         <activity android:name=".Controllers.Activities.MainActivity">
             <intent-filter>

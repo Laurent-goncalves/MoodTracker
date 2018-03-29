@@ -90,13 +90,13 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         // Set the alarm to start at 0:00 AM
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY,23);
-        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,3);
 
         // setRepeating() lets you specify a precise custom interval--in this case,
         // 1 day
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, alarmIntent);
+        alarmMgr.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+                60000, alarmIntent);
 
 
        // display_data_saved();
@@ -198,10 +198,11 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         page_adapter = new PageAdapter(getSupportFragmentManager(),
                 getResources().getIntArray(R.array.colorPagesViewPager),last_feeling,last_comment);
 
-        if(pager !=null) {
+            pager=null;
+            configureViewPager();
             pager.setAdapter(page_adapter);
             pager.setCurrentItem(current_frag);
-        }
+
     }
 
     private void configureViewPager(){
@@ -344,7 +345,6 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
         bundle.putInt(BUNDLE_STATE_LAST_FEELING, last_feeling);
         bundle.putString(BUNDLE_STATE_LAST_COMMENT, last_comment);
-        System.out.println("eeeee stopped : last_feeling =" + last_feeling + "    last_comment=" + last_comment);
     }
 
 
@@ -354,8 +354,6 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
         last_feeling=bundle.getInt(BUNDLE_STATE_LAST_FEELING);
         last_comment=bundle.getString(BUNDLE_STATE_LAST_COMMENT);
-
-        System.out.println("eeeee onrestart : last_feeling =" + last_feeling + "    last_comment=" + last_comment);
 
         page_adapter = new PageAdapter(getSupportFragmentManager(),
                 getResources().getIntArray(R.array.colorPagesViewPager),last_feeling,last_comment);
@@ -382,15 +380,15 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
     private void new_values() {
 
-        int last = 27;
+        int last = 29;
 
-        save_in_sharedpreferrences(0,1,"commentaire1",new GregorianCalendar(2018,2,last).getTimeInMillis());
-        save_in_sharedpreferrences(1,-1,null,new GregorianCalendar(2018,2,last-1).getTimeInMillis());
-        save_in_sharedpreferrences(2,3,null,new GregorianCalendar(2018,2,last-2).getTimeInMillis());
-        save_in_sharedpreferrences(3,4,"il a plu toute la journée...",new GregorianCalendar(2018,2,last-3).getTimeInMillis());
-        save_in_sharedpreferrences(4,-1,null,new GregorianCalendar(2018,2,last-4).getTimeInMillis());
-        save_in_sharedpreferrences(5,2,"il fait beau",new GregorianCalendar(2018,2,last-5).getTimeInMillis());
-        save_in_sharedpreferrences(6,1,"y'a plus rien dans le frigo !!",new GregorianCalendar(2018,2,last-6).getTimeInMillis());
+        save_in_sharedpreferrences(0,0,"commentaire1",new GregorianCalendar(2018,2,last).getTimeInMillis());
+        save_in_sharedpreferrences(1,3,null,new GregorianCalendar(2018,2,last-1).getTimeInMillis());
+        save_in_sharedpreferrences(2,4,"eeee",new GregorianCalendar(2018,2,last-2).getTimeInMillis());
+        save_in_sharedpreferrences(3,3,"il a plu toute la journée...",new GregorianCalendar(2018,2,last-3).getTimeInMillis());
+        save_in_sharedpreferrences(4,2,null,new GregorianCalendar(2018,2,last-4).getTimeInMillis());
+        save_in_sharedpreferrences(5,1,"il fait beau",new GregorianCalendar(2018,2,last-5).getTimeInMillis());
+        save_in_sharedpreferrences(6,0,"y'a plus rien dans le frigo !!",new GregorianCalendar(2018,2,last-6).getTimeInMillis());
     }
 
 
