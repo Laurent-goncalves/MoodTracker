@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.g.laurent.moodtracker.Models.Feeling;
 import com.g.laurent.moodtracker.Models.Feelings;
 import com.g.laurent.moodtracker.R;
 import butterknife.BindView;
@@ -29,6 +31,7 @@ public class PageFragment extends Fragment implements Feelings {
     private static final String KEY_COLOR="color";
     private static final String KEY_LAST_FEELING="feeling";
     private static final String KEY_LAST_COMMENT="comment";
+    private static final String KEY_LAST_DATE = "date";
 
     // Declaration of a callbackMainActivity
     protected callbackMainActivity mCallbackMainActivity;
@@ -36,12 +39,11 @@ public class PageFragment extends Fragment implements Feelings {
     // Declaration variables
     private int position;
     private int color;
-    private int last_feeling;
-    private String last_comment;
+    private Feeling feeling;
 
     public PageFragment() { }
 
-    public static PageFragment newInstance(int position, int color, int last_feeling, String last_comment) {
+    public static PageFragment newInstance(int position, int color, Feeling feeling) {
 
             // Method that will create a new instance of PageFragment, and add data to its bundle.
         // Creation of a new fragment
@@ -51,8 +53,9 @@ public class PageFragment extends Fragment implements Feelings {
         Bundle args = new Bundle();
         args.putInt(KEY_POSITION, position);
         args.putInt(KEY_COLOR, color);
-        args.putInt(KEY_LAST_FEELING,last_feeling);
-        args.putString(KEY_LAST_COMMENT,last_comment);
+        args.putInt(KEY_LAST_FEELING,feeling.getFeeling());
+        args.putString(KEY_LAST_COMMENT,feeling.getComment());
+        args.putLong(KEY_LAST_DATE,feeling.getDate());
         frag.setArguments(args);
 
         return(frag);
@@ -67,8 +70,9 @@ public class PageFragment extends Fragment implements Feelings {
         // Get data from Bundle (created in method newInstance)
         position = getArguments().getInt(KEY_POSITION, -1);
         color = getArguments().getInt(KEY_COLOR, -1);
-        last_feeling= getArguments().getInt(KEY_LAST_FEELING, -1);
-        last_comment= getArguments().getString(KEY_LAST_COMMENT, null);
+        feeling = new Feeling(  getArguments().getInt(KEY_LAST_FEELING, -1),
+                                getArguments().getInt(KEY_LAST_DATE, 0),
+                                getArguments().getString(KEY_LAST_COMMENT, null));
 
         update_image_feeling_and_framelayout();
         update_commentView();
@@ -80,13 +84,12 @@ public class PageFragment extends Fragment implements Feelings {
     private void update_image_feeling_and_framelayout(){
 
         // IMAGEVIEW update and adding of a click listener
-        image_feeling.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                green_circle.setImageResource(R.drawable.cerclevert);
-                final MediaPlayer mp = MediaPlayer.create(getContext(), mSounds[position]);
-                mp.start();
-                mCallbackMainActivity.save_temp_last_feeling(position,commentView.getText().toString());
-            }
+        image_feeling.setOnClickListener(v -> {
+            green_circle.setImageResource(R.drawable.cerclevert);
+            final MediaPlayer mp = MediaPlayer.create(getContext(), mSounds[position]);
+            mp.start();
+            Feeling new_feeling = new Feeling(position,System.currentTimeMillis(),commentView.getText().toString());
+            mCallbackMainActivity.save_temp_last_feeling(position, new_feeling);
         });
 
         // FRAMELAYOUT update
@@ -96,8 +99,8 @@ public class PageFragment extends Fragment implements Feelings {
 
     private void update_commentView() {
         if (commentView != null) {
-            if (position == last_feeling && last_comment != null)
-                commentView.setText(last_comment);
+            if (position == feeling.getFeeling() && feeling.getComment() != null)
+                commentView.setText(feeling.getComment());
             else
                 commentView.setText(null);
         }
@@ -106,7 +109,7 @@ public class PageFragment extends Fragment implements Feelings {
     private void update_green_circle(){
 
         if(green_circle!=null) {
-            if(last_feeling == position)
+            if(feeling.getFeeling() == position)
                 green_circle.setImageResource(R.drawable.cerclevert);
             else
                 green_circle.setImageResource(0);
@@ -124,7 +127,7 @@ public class PageFragment extends Fragment implements Feelings {
     }
 
     public interface callbackMainActivity {
-        void save_temp_last_feeling(int position, String comment);
+        void save_temp_last_feeling(int position, Feeling feeling);
     }
 
     @Override
