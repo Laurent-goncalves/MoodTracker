@@ -1,4 +1,4 @@
-package com.g.laurent.moodtracker.Models;
+package com.g.laurent.moodtracker.Views;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

@@ -18,8 +18,6 @@ public class Feeling {
         this.comment=last_comment;
     }
 
-    private boolean IsFeelingNull(){return feeling == -1 && comment == null && date == 0;}
-
     private void setLast_date_in_String(Long date){
         date_str= DateFormat.format("dd/MM/yyyy", new Date(date)).toString();
     }
@@ -53,4 +51,11 @@ public class Feeling {
         this.date=0;
         this.comment=null;
     }
+
+
+    public void FeelingToString(){
+
+        System.out.println("eeeee    feeling = " + feeling + "    date = " + date_str + "      comment=" + comment);
+    }
+
 }

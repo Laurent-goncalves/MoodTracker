@@ -1,6 +1,8 @@
 package com.g.laurent.moodtracker.Controllers.Activities;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,21 +11,25 @@ import android.os.PersistableBundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import com.g.laurent.moodtracker.Controllers.Fragments.PageFragment;
+import com.g.laurent.moodtracker.Models.AlarmReceiver;
 import com.g.laurent.moodtracker.Models.Feeling;
 import com.g.laurent.moodtracker.Models.FeelingsChronology;
 import com.g.laurent.moodtracker.Models.PageAdapter;
 import com.g.laurent.moodtracker.R;
+import java.util.Calendar;
 import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static java.lang.System.currentTimeMillis;
 
-public class MainActivity extends AppCompatActivity implements PageFragment.callbackMainActivity {
+public class MainActivity extends AppCompatActivity implements PageFragment.callbackMainActivity, AlarmReceiver.callbackAlarm{
 
     @BindView(R.id.activity_main_icon_comment) ImageView icon_com;
     @BindView(R.id.activity_main_icon_chrono) ImageView icon_chrono;
@@ -41,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
     private ViewPager pager;
     private PageAdapter page_adapter;
     private SharedPreferences sharedPreferences;
-
+    private PendingIntent pendingIntent;
+    private AlarmReceiver.callbackAlarm mcallbackAlarm;
+    private AlarmReceiver alarmReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,24 +61,89 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         // Recover sharedpreferences
         sharedPreferences=getSharedPreferences("chrono",Context.MODE_PRIVATE);
 
-        // Initialize variants
+        /*save_in_sharedpreferrences(0,new Feeling(-1,currentTimeMillis()-24*60*60*1000*7,null));
+        save_in_sharedpreferrences(1,new Feeling(-1,currentTimeMillis()-24*60*60*1000*8,null));
+        save_in_sharedpreferrences(2,new Feeling(-1,currentTimeMillis()-24*60*60*1000*9,null));
+        save_in_sharedpreferrences(3,new Feeling(-1,currentTimeMillis()-24*60*60*1000*10,null));
+        save_in_sharedpreferrences(4,new Feeling(-1,currentTimeMillis()-24*60*60*1000*11,null));
+        save_in_sharedpreferrences(5,new Feeling(-1,currentTimeMillis()-24*60*60*1000*12,null));
+        save_in_sharedpreferrences(6,new Feeling(-1,currentTimeMillis()-24*60*60*1000*13,null));
+*/
+
+        // Initialize variables
         fragment_number = 0;
-        onRestoreInstanceState(savedInstanceState);
         chrono_texts = getResources().getStringArray(R.array.text_chrono_list);
-        mFeelingsChronology = new FeelingsChronology(chrono_texts.length,sharedPreferences,current_feeling);
+        define_current_feeling(savedInstanceState);
+        mFeelingsChronology = new FeelingsChronology(chrono_texts.length,sharedPreferences,getApplicationContext());
+
+        // Configuration of alarm for saving feeling each day
+        mcallbackAlarm = this;
+        alarmReceiver = new AlarmReceiver();
+        alarmReceiver.createCallbackAlarm(mcallbackAlarm);
 
         // Configure ViewPager, button chronology and buttons comment
         this.configureChronoButton();
         this.configureCommentButton();
         this.configureViewPager();
         this.configure_page_adapter(fragment_number,current_feeling);
+        this.configureAlarmManager();
     }
 
-    // ------- CONFIGURATION ----------
+    private void configureAlarmManager(){
+        Intent alarmIntent = new Intent(getApplicationContext(), alarmReceiver.getClass());
+        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        startAlarm();
+    }
 
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onRestoreInstanceState(savedInstanceState, persistentState);
+    private void startAlarm() {
+        // Set the alarm to start at 0:00 a.m.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE,0);
+
+        // Create alarm
+        AlarmManager manager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        manager.setRepeating(AlarmManager.RTC,calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    public void save_chronology_in_sharedpreferrences(){
+
+        // Save the current feeling in position 0
+        save_in_sharedpreferrences(0, current_feeling);
+
+        // Save all other feelings that can be saved (need to shift the dates)
+        for(int i=1;i<=chrono_texts.length;i++) {
+
+            if(mFeelingsChronology.getFeeling(i)!=null) // if the date for position "i" has a feeling in sharedpreferences
+                save_in_sharedpreferrences(i,mFeelingsChronology.getFeeling(i)); // it is saved at the correct place in sharedpreferences
+            else // if not, a null feeling is saved at the correct place in sharedpreferences
+                save_in_sharedpreferrences(i,new Feeling(-1,currentTimeMillis()-24*60*60*1000*i,null));
+        }
+        current_feeling=new Feeling(-1,currentTimeMillis(),null); // re-initialize current feeling
+        mFeelingsChronology = new FeelingsChronology(chrono_texts.length,sharedPreferences,getApplicationContext());
+    }
+
+    private void save_in_sharedpreferrences(int position, Feeling feeling){
+        sharedPreferences
+                .edit()
+                .putInt("FEELING_" + position, feeling.getFeeling())
+                .putString("COMMENT_" + position, feeling.getComment())
+                .putLong("DATE_TIME_" + position, feeling.getDate())
+                .apply();
+    }
+
+    // ----------------------- METHODS FOR SAVING AND RECOVER THE DATA CURRENT FEELING in case of change of activity -----------
+    // -----------------------                   or switching the telephone to land mode                   -----------
+
+    private void save_current_feeling(Bundle bundle){
+        bundle.putInt(BUNDLE_STATE_LAST_FEELING, current_feeling.getFeeling());
+        bundle.putString(BUNDLE_STATE_LAST_COMMENT, current_feeling.getComment());
+        bundle.putLong(BUNDLE_STATE_LAST_DATE, current_feeling.getDate());
+        bundle.putInt(BUNDLE_STATE_FRAGMENT_NUM, fragment_number);
+    }
+
+    private void define_current_feeling(Bundle savedInstanceState){
 
         if (savedInstanceState != null) {
 
@@ -84,14 +157,39 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
                 feeling = savedInstanceState.getInt(BUNDLE_STATE_LAST_FEELING,-1);
 
             comment= savedInstanceState.getString(BUNDLE_STATE_LAST_COMMENT,null);
-
             current_feeling = new Feeling(feeling,date,comment);
             fragment_number = savedInstanceState.getInt(BUNDLE_STATE_FRAGMENT_NUM,0);
 
         } else
-            current_feeling = new Feeling(-1,0,null);
+            current_feeling = new Feeling(-1,currentTimeMillis(),null);
 
     }
+
+    private void restore_appli_state(Bundle savedInstanceState){
+        define_current_feeling(savedInstanceState);
+        configureCommentButton();
+        configureChronoButton();
+        configure_page_adapter(fragment_number,current_feeling);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        save_current_feeling(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+        restore_appli_state(savedInstanceState);
+    }
+
+    // ---------------------------------- CONFIGURATION --------------------------------
 
     private void create_builder_for_AlertDialog(){
 
@@ -132,18 +230,14 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
     }
 
     private void configureCommentButton(){
-
         // Add the icon drawable in imageView
         icon_com.setImageResource(R.drawable.ic_note_add_black);
 
         // Associate an event instruction in case the user click on the icon comment
-        icon_com.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                create_builder_for_AlertDialog();
-            }
-        });
+        icon_com.setOnClickListener(v -> create_builder_for_AlertDialog());
 
+        // If the feeling displayed correspond to the feeling saved temporarily,
+        // display and enable the icon comment
         if(current_feeling.getFeeling()==fragment_number) {
             icon_com.setVisibility(View.VISIBLE);
             icon_com.setEnabled(true);
@@ -158,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         // Add the icon drawable in imageView
         icon_chrono.setImageResource(R.drawable.ic_history_black);
 
-        // Associate an event instruction in case the user click on the icon chronology
+        // Associate to the icon chrono the launch of ChronoActivity in case the user click on it
         icon_chrono.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,8 +279,8 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                update_fragment_number(position);
-                configureCommentButton();
+                update_fragment_number(position); // update the feeling number currently displayed
+                configureCommentButton(); // configure the icon comment
             }
 
             @Override
@@ -199,77 +293,29 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
     private void update_fragment_number(int position){this.fragment_number = position;}
 
+    //  --------------------------- CALLBACK FROM PageFragment ------------------------------
+    // ----------------- To update the current feeling in MainActivity ----------------------
+
     @Override
     public void save_temp_last_feeling(int position, Feeling feeling) {
-
         current_feeling = feeling;
         configure_page_adapter(fragment_number, current_feeling);
     }
 
-    // ------- WHEN THE ACTIVITY REOPENS, CHECK IF DATA CAN BE SAVED -----------
+    //  ------------------------------- CALLBACK FROM ALARM RECEIVER ------------------------------------
+    // ----------------- To update the chronology of feelings in sharedpreferences ----------------------
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void save_perm_last_feeling() {
 
-        String date_today = (new Date(currentTimeMillis())).toString();
-        String date_to_compare = (new Date(current_feeling.getDate())).toString();
+        String date_current_feeling = DateFormat.format("dd/MM/yyyy", new Date(current_feeling.getDate())).toString();
+        String date_today = DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis())).toString();
 
-        // if the last_date is different than today's date, the data can be saved in sharedpreferences
-        if(!date_to_compare.equals(date_today) && current_feeling.getDate() != 0) {
-            mFeelingsChronology.save_chronology_in_sharedpreferrences();
+        if(!date_today.equals(date_current_feeling)) { // if the current feeling is not dated from today
+            Toast toast = Toast.makeText(getApplicationContext(), "Enregistrement humeur du jour", Toast.LENGTH_SHORT);
+            toast.show();
+            save_chronology_in_sharedpreferrences(); // update the chronology in sharedpreferences
+            configure_page_adapter(fragment_number, current_feeling); // update the viewpager
         }
     }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-
-        outState.putInt(BUNDLE_STATE_LAST_FEELING, current_feeling.getFeeling());
-        outState.putString(BUNDLE_STATE_LAST_COMMENT, current_feeling.getComment());
-        outState.putLong(BUNDLE_STATE_LAST_DATE, current_feeling.getDate());
-        outState.putInt(BUNDLE_STATE_FRAGMENT_NUM, fragment_number);
-
-        configureCommentButton();
-        super.onSaveInstanceState(outState);
-    }
-
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-
-        bundle.putInt(BUNDLE_STATE_LAST_FEELING, last_feeling);
-        bundle.putString(BUNDLE_STATE_LAST_COMMENT, last_comment);
-    }
-
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-        last_feeling=bundle.getInt(BUNDLE_STATE_LAST_FEELING);
-        last_comment=bundle.getString(BUNDLE_STATE_LAST_COMMENT);
-
-        page_adapter = new PageAdapter(getSupportFragmentManager(),
-                getResources().getIntArray(R.array.colorPagesViewPager),last_feeling,last_comment);
-
-        if(pager !=null) {
-            pager.setAdapter(page_adapter);
-            pager.setCurrentItem(0);
-        }
-    }
-
-    private void display_data_saved(){
-
-        System.out.println("eeeed -------------------------------------------------------------");
-        for(int i = chrono_texts.length-1;i>=0;i--) {
-            Long date_feeling_long = sharedPreferences.getLong("DATE_TIME_" + i, 0);
-            String date_feeling = DateFormat.format("dd/MM/yyyy", new Date(date_feeling_long)).toString();
-            String comment = sharedPreferences.getString("COMMENT_" + i, null);
-            int feeling = sharedPreferences.getInt("FEELING_" + i, -1);
-
-            System.out.println("eeeedd " + i + " " + date_feeling + "  " + feeling + "   " + comment );
-        }
-        System.out.println("eeeed -------------------------------------------------------------");
-    }*/
-
 }

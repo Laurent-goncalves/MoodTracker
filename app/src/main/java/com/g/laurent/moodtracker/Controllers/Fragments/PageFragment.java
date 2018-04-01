@@ -45,7 +45,7 @@ public class PageFragment extends Fragment implements Feelings {
 
     public static PageFragment newInstance(int position, int color, Feeling feeling) {
 
-            // Method that will create a new instance of PageFragment, and add data to its bundle.
+        // Method that will create a new instance of PageFragment, and add data to its bundle.
         // Creation of a new fragment
         PageFragment frag = new PageFragment();
 
@@ -74,6 +74,7 @@ public class PageFragment extends Fragment implements Feelings {
                                 getArguments().getInt(KEY_LAST_DATE, 0),
                                 getArguments().getString(KEY_LAST_COMMENT, null));
 
+        // Update the different views
         update_image_feeling_and_framelayout();
         update_commentView();
         update_green_circle();
@@ -85,11 +86,11 @@ public class PageFragment extends Fragment implements Feelings {
 
         // IMAGEVIEW update and adding of a click listener
         image_feeling.setOnClickListener(v -> {
-            green_circle.setImageResource(R.drawable.cerclevert);
+            green_circle.setImageResource(R.drawable.cerclevert); // display the green circle around the smiley
             final MediaPlayer mp = MediaPlayer.create(getContext(), mSounds[position]);
-            mp.start();
-            Feeling new_feeling = new Feeling(position,System.currentTimeMillis(),commentView.getText().toString());
-            mCallbackMainActivity.save_temp_last_feeling(position, new_feeling);
+            mp.start(); // start the sound when clicking on the smiley
+            Feeling new_feeling = new Feeling(position,System.currentTimeMillis(),commentView.getText().toString()); // define new feeling
+            mCallbackMainActivity.save_temp_last_feeling(position, new_feeling); // send the new current feeling to MainActivity
         });
 
         // FRAMELAYOUT update

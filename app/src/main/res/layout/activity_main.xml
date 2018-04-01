@@ -6,7 +6,7 @@
     android:id="@+id/fragment_page_back"
     tools:context="com.g.laurent.moodtracker.Controllers.Fragments.PageFragment">
 
-    <com.g.laurent.moodtracker.Models.VerticalViewPager
+    <com.g.laurent.moodtracker.Views.VerticalViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_main_viewpager"
         android:layout_width="match_parent"

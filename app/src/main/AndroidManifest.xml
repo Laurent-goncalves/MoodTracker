@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <receiver
-            android:name=".Controllers.AlarmReceiver"
+            android:name=".Models.AlarmReceiver"
             android:exported="true"/>
 
 

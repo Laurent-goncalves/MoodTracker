@@ -1,44 +1,27 @@
 package com.g.laurent.moodtracker.Models;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.format.DateFormat;
-import com.g.laurent.moodtracker.Controllers.Activities.MainActivity;
-import com.g.laurent.moodtracker.Controllers.AlarmReceiver;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import static java.lang.System.currentTimeMillis;
 
-
-public class FeelingsChronology  {
+public class FeelingsChronology {
 
     private SharedPreferences sharedPreferences;
     private HashMap<String,Feeling> feelings_saved;
-    private int number_feelings_saved;
-    private Feeling currentFeeling;
-    private AlarmManager alarmMgr;
-    private PendingIntent pendingIntent;
-    private AlarmReceiver.callbackAlarm mcallbackAlarm;
-    private AlarmReceiver alarmReceiver;
+    private int number_days_chronology;
 
-
-    public FeelingsChronology(int number_feelings_saved, SharedPreferences sharedPreferences, Feeling currentFeeling){
-
-
-        mcallbackAlarm=this;
-        alarmReceiver = new AlarmReceiver();
-        alarmReceiver.createCallbackAlarm(mcallbackAlarm);
+    public FeelingsChronology(int number_days_chronology, SharedPreferences sharedPreferences, Context context){
 
         this.sharedPreferences = sharedPreferences;
-        this.number_feelings_saved=number_feelings_saved;
-        this.currentFeeling=currentFeeling;
+        this.number_days_chronology=number_days_chronology;
         recover_feelings_and_comments_saved();
-        // this.configureAlarmManager();
+    }
+
+    public int getNumber_days_chronology(){
+        return number_days_chronology;
     }
 
     private void recover_feelings_and_comments_saved(){
@@ -46,7 +29,7 @@ public class FeelingsChronology  {
         feelings_saved = new HashMap<>();
 
         // For each keys related to the 7 days, recover the date, the feeling number and the eventual comment
-        for(int i=number_feelings_saved-1;i>=0;i--){
+        for(int i=number_days_chronology-1;i>=0;i--){
 
             // recover in sharedPreferences the different parameters necessary to create a feeling
             Long date_feeling_long = sharedPreferences.getLong("DATE_TIME_" + i,0);
@@ -61,14 +44,13 @@ public class FeelingsChronology  {
         }
     }
 
-    public void save_chronology_in_sharedpreferrences(){
+/*  public void save_chronology_in_sharedpreferrences(){
 
         // Save the current feeling
-        String date_feeling = DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000)).toString();
         save_in_sharedpreferrences(0, currentFeeling);
 
         // Save all other feelings that can be saved (need to shift the dates)
-        for(int i=1;i<=number_feelings_saved;i++) {
+        for(int i=1;i<=number_days_chronology;i++) {
             String date_feeling_str = DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000*i)).toString();
 
             if(feelings_saved.get(date_feeling_str)!=null) // if the date for position "i" has a feeling in sharedpreferences
@@ -76,6 +58,9 @@ public class FeelingsChronology  {
             else // if not, a null feeling is saved at the correct place in sharedpreferences
                 save_in_sharedpreferrences(i,new Feeling(-1,currentTimeMillis()-24*60*60*1000*i,null));
         }
+
+        // Update of Feelings chronology
+        recover_feelings_and_comments_saved();
     }
 
     private void save_in_sharedpreferrences(int position, Feeling feeling){
@@ -87,39 +72,55 @@ public class FeelingsChronology  {
                 .apply();
     }
 
+    // --------------------------------- ALARMANAGER ---------------------------------------------------- //
 
+    @Override
+    public void save_perm_last_feeling() {
+        save_chronology_in_sharedpreferrences();
 
+        String date_current_feeling = DateFormat.format("dd/MM/yyyy", new Date(currentFeeling.getDate())).toString();
+        String date_today = DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis())).toString();
 
-    private void configureAlarmManager(){
-        Intent alarmIntent = new Intent(MainActivity.this, alarmReceiver.getClass());
-        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        startAlarm();
+        if(!date_today.equals(date_current_feeling))
+            this.mCallbackAlarmMainActivity.update_chronology_and_current_feeling(this, currentFeeling);
     }
 
-    private void startAlarm() {
+    public interface callbackAlarmMainActivity {
+        void update_chronology_and_current_feeling(FeelingsChronology feelingsChronology,Feeling current_feeling);
+    }*/
 
-        // Set the alarm to start at 0:00 a.m.
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
+    // ---------------------------------- INFORMATION ON FeelingsChronology ------------------------------
 
-        // Create alarm
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        manager.setRepeating(AlarmManager.RTC,calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    public int number_of_feelings_saved(){
+
+        int number = 0;
+
+        for(int i = 1;i<=number_days_chronology;i++) {
+
+            String date = create_date_ddMMyyyy(currentTimeMillis()-24*60*60*1000*i);
+
+            if(feelings_saved.get(date)!=null) {
+                if(feelings_saved.get(date).getFeeling()!= -1)
+                    number++;
+            }
+        }
+        return number; // define how many feelings are saved in the sharedpreferences
     }
 
-    private void new_values() {
+    public Feeling getFeeling(int position){
 
-        int last = 29;
+        int limit = number_days_chronology;
+        String date_feeling = DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000 * (limit-position))).toString();
 
-        save_in_sharedpreferrences(0,new Feeling(0,new GregorianCalendar(2018,2,last).getTimeInMillis(),"commentaire1"));
-        save_in_sharedpreferrences(1,new Feeling(3,new GregorianCalendar(2018,2,last-1).getTimeInMillis(),null));
-        save_in_sharedpreferrences(2,new Feeling(4,new GregorianCalendar(2018,2,last-2).getTimeInMillis(),"eeee"));
-        save_in_sharedpreferrences(3,new Feeling(3,new GregorianCalendar(2018,2,last-3).getTimeInMillis(),"il a plu toute la journée..."));
-        save_in_sharedpreferrences(4,new Feeling(2,new GregorianCalendar(2018,2,last-4).getTimeInMillis(),null);
-        save_in_sharedpreferrences(5,new Feeling(1,new GregorianCalendar(2018,2,last-5).getTimeInMillis(),"il fait beau"));
-        save_in_sharedpreferrences(6,new Feeling(0,new GregorianCalendar(2018,2,last-6).getTimeInMillis(),"y'a plus rien dans le frigo !!"));
+        if (feelings_saved.get(date_feeling)!= null)
+            return feelings_saved.get(date_feeling);
+        else
+            return new Feeling(-1,currentTimeMillis()-24*60*60*1000 * (limit-position),null);
     }
 
+    // ---------------------------------- OTHER METHODS ---------------------------------------
+
+    private String create_date_ddMMyyyy(Long date){
+        return DateFormat.format("dd/MM/yyyy", new Date(date)).toString();
+    }
 }

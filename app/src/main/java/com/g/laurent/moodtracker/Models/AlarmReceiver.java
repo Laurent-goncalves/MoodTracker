@@ -1,4 +1,4 @@
-package com.g.laurent.moodtracker.Controllers;
+package com.g.laurent.moodtracker.Models;
 
 
 import android.content.BroadcastReceiver;
@@ -7,7 +7,7 @@ import android.content.Intent;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    private callbackAlarm mcallbackAlarm;
+    private static callbackAlarm mcallbackAlarm;
 
     @Override
     public void onReceive(Context context, Intent intent) {
