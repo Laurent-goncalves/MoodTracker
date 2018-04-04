@@ -44,51 +44,6 @@ public class FeelingsChronology {
         }
     }
 
-/*  public void save_chronology_in_sharedpreferrences(){
-
-        // Save the current feeling
-        save_in_sharedpreferrences(0, currentFeeling);
-
-        // Save all other feelings that can be saved (need to shift the dates)
-        for(int i=1;i<=number_days_chronology;i++) {
-            String date_feeling_str = DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis()-24*60*60*1000*i)).toString();
-
-            if(feelings_saved.get(date_feeling_str)!=null) // if the date for position "i" has a feeling in sharedpreferences
-                save_in_sharedpreferrences(i,feelings_saved.get(date_feeling_str)); // it is saved at the correct place in sharedpreferences
-            else // if not, a null feeling is saved at the correct place in sharedpreferences
-                save_in_sharedpreferrences(i,new Feeling(-1,currentTimeMillis()-24*60*60*1000*i,null));
-        }
-
-        // Update of Feelings chronology
-        recover_feelings_and_comments_saved();
-    }
-
-    private void save_in_sharedpreferrences(int position, Feeling feeling){
-        sharedPreferences
-                .edit()
-                .putInt("FEELING_" + position, feeling.getFeeling())
-                .putString("COMMENT_" + position, feeling.getComment())
-                .putLong("DATE_TIME_" + position, feeling.getDate())
-                .apply();
-    }
-
-    // --------------------------------- ALARMANAGER ---------------------------------------------------- //
-
-    @Override
-    public void save_perm_last_feeling() {
-        save_chronology_in_sharedpreferrences();
-
-        String date_current_feeling = DateFormat.format("dd/MM/yyyy", new Date(currentFeeling.getDate())).toString();
-        String date_today = DateFormat.format("dd/MM/yyyy", new Date(currentTimeMillis())).toString();
-
-        if(!date_today.equals(date_current_feeling))
-            this.mCallbackAlarmMainActivity.update_chronology_and_current_feeling(this, currentFeeling);
-    }
-
-    public interface callbackAlarmMainActivity {
-        void update_chronology_and_current_feeling(FeelingsChronology feelingsChronology,Feeling current_feeling);
-    }*/
-
     // ---------------------------------- INFORMATION ON FeelingsChronology ------------------------------
 
     public int number_of_feelings_saved(){

@@ -46,16 +46,4 @@ public class Feeling {
         this.comment=feeling_comment;
     }
 
-    public void reset_feeling(){
-        this.feeling=-1;
-        this.date=0;
-        this.comment=null;
-    }
-
-
-    public void FeelingToString(){
-
-        System.out.println("eeeee    feeling = " + feeling + "    date = " + date_str + "      comment=" + comment);
-    }
-
 }

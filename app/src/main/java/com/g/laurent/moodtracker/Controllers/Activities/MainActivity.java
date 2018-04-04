@@ -61,15 +61,6 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         // Recover sharedpreferences
         sharedPreferences=getSharedPreferences("chrono",Context.MODE_PRIVATE);
 
-        /*save_in_sharedpreferrences(0,new Feeling(-1,currentTimeMillis()-24*60*60*1000*7,null));
-        save_in_sharedpreferrences(1,new Feeling(-1,currentTimeMillis()-24*60*60*1000*8,null));
-        save_in_sharedpreferrences(2,new Feeling(-1,currentTimeMillis()-24*60*60*1000*9,null));
-        save_in_sharedpreferrences(3,new Feeling(-1,currentTimeMillis()-24*60*60*1000*10,null));
-        save_in_sharedpreferrences(4,new Feeling(-1,currentTimeMillis()-24*60*60*1000*11,null));
-        save_in_sharedpreferrences(5,new Feeling(-1,currentTimeMillis()-24*60*60*1000*12,null));
-        save_in_sharedpreferrences(6,new Feeling(-1,currentTimeMillis()-24*60*60*1000*13,null));
-*/
-
         // Initialize variables
         fragment_number = 0;
         chrono_texts = getResources().getStringArray(R.array.text_chrono_list);
@@ -319,3 +310,23 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         }
     }
 }
+
+        /*int last = 1;
+        save_in_sharedpreferrences(0,new Feeling(0,currentTimeMillis()-24*60*60*1000*last,"il pleut"));
+        save_in_sharedpreferrences(1,new Feeling(-1,currentTimeMillis()-24*60*60*1000*(1+last),null));
+        save_in_sharedpreferrences(2,new Feeling(2,currentTimeMillis()-24*60*60*1000*(2+last),null));
+        save_in_sharedpreferrences(3,new Feeling(3,currentTimeMillis()-24*60*60*1000*(3+last),null));
+        save_in_sharedpreferrences(4,new Feeling(-1,currentTimeMillis()-24*60*60*1000*(4+last),null));
+        save_in_sharedpreferrences(5,new Feeling(4,currentTimeMillis()-24*60*60*1000*(5+last),"il fait beau"));
+        save_in_sharedpreferrences(6,new Feeling(1,currentTimeMillis()-24*60*60*1000*(6+last),null));
+        save_in_sharedpreferrences(7,new Feeling(0,currentTimeMillis()-24*60*60*1000*(7+last),null));*/
+
+        /*save_in_sharedpreferrences(0,new Feeling(-1,0,null));
+        save_in_sharedpreferrences(1,new Feeling(-1,0,null));
+        save_in_sharedpreferrences(2,new Feeling(-1,0,null));
+        save_in_sharedpreferrences(3,new Feeling(-1,0,null));
+        save_in_sharedpreferrences(4,new Feeling(-1,0,null));
+        save_in_sharedpreferrences(5,new Feeling(-1,0,null));
+        save_in_sharedpreferrences(6,new Feeling(-1,0,null));
+        save_in_sharedpreferrences(7,new Feeling(-1,0,null));
+        save_in_sharedpreferrences(8,new Feeling(-1,0,null));*/

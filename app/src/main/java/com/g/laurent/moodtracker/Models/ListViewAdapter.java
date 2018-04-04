@@ -103,12 +103,7 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     private void define_height_of_each_relativelayout(){
-
-        int number_of_days = mFeelingsChronology.getNumber_days_chronology();
-        if(number_of_days > 0)
-            viewHolder.mRelativeLayout.getLayoutParams().height = screen_height / number_of_days; // divide the screen
-        else
-            viewHolder.mRelativeLayout.getLayoutParams().height = screen_height / 7; // divide the screen
+        viewHolder.mRelativeLayout.getLayoutParams().height = screen_height / 7; // divide the screen
     }
 
     private void define_imageview_for_symbol_comment(Feeling feeling, View convertView){
