@@ -1,5 +1,6 @@
 package com.g.laurent.moodtracker.Models;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -25,6 +26,6 @@ public class PageAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {return(PageFragment.newInstance(position, this.colors[position], feeling));}
 
     @Override
-    public int getItemPosition(Object object) {return PagerAdapter.POSITION_NONE;}
+    public int getItemPosition(@NonNull Object object) {return PagerAdapter.POSITION_NONE;}
 
 }

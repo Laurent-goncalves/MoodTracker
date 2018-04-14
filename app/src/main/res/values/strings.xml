@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">MoodTracker</string>
+    <string name="symbol_comment">symbol comment</string>
+    <string name="icon_comment">icon comment</string>
+    <string name="icon_chrono">icon chronology</string>
+    <string name="green_circle">green circle</string>
+    <string name="smiley_picture">picture of smiley</string>
 
     <string-array name="text_chrono_list">
 

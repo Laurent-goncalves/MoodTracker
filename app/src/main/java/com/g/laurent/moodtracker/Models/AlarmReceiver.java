@@ -20,6 +20,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
     public void createCallbackAlarm(callbackAlarm mcallbackAlarm){
-        this.mcallbackAlarm=mcallbackAlarm;
+        AlarmReceiver.mcallbackAlarm =mcallbackAlarm;
     }
 }

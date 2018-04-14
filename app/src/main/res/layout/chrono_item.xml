@@ -20,6 +20,7 @@
         android:layout_alignEnd="@+id/fragment_chrono_text"
         android:padding="@dimen/size_padding_imageview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/symbol_comment" />
 
 </RelativeLayout>

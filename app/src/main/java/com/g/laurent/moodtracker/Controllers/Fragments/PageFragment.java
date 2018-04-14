@@ -4,6 +4,7 @@ package com.g.laurent.moodtracker.Controllers.Fragments;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,17 +63,19 @@ public class PageFragment extends Fragment implements Feelings {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_page, container, false);
         ButterKnife.bind(this, view);
 
         // Get data from Bundle (created in method newInstance)
-        position = getArguments().getInt(KEY_POSITION, -1);
-        color = getArguments().getInt(KEY_COLOR, -1);
-        feeling = new Feeling(  getArguments().getInt(KEY_LAST_FEELING, -1),
-                                getArguments().getInt(KEY_LAST_DATE, 0),
-                                getArguments().getString(KEY_LAST_COMMENT, null));
+        if(getArguments()!=null){
+            position = getArguments().getInt(KEY_POSITION, -1);
+            color = getArguments().getInt(KEY_COLOR, -1);
+            feeling = new Feeling(  getArguments().getInt(KEY_LAST_FEELING, -1),
+                    getArguments().getInt(KEY_LAST_DATE, 0),
+                    getArguments().getString(KEY_LAST_COMMENT, null));
+        }
 
         // Update the different views
         update_image_feeling_and_framelayout();

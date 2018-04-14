@@ -1,8 +1,8 @@
 package com.g.laurent.moodtracker.Views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.view.ViewPager;
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -44,6 +44,7 @@ public class VerticalViewPager extends ViewPager {
         flipXY(ev);
         return toIntercept;
     }
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         final boolean toHandle = super.onTouchEvent(flipXY(ev));
@@ -61,7 +62,7 @@ public class VerticalViewPager extends ViewPager {
     }
     private static final class VerticalPageTransformer implements ViewPager.PageTransformer {
         @Override
-        public void transformPage(View view, float position) {
+        public void transformPage(@NonNull View view, float position) {
             final int pageWidth = view.getWidth();
             final int pageHeight = view.getHeight();
             if (position < -1) {

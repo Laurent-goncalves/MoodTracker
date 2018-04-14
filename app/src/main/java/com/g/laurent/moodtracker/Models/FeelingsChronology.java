@@ -1,6 +1,5 @@
 package com.g.laurent.moodtracker.Models;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.format.DateFormat;
 import java.util.Date;
@@ -13,15 +12,11 @@ public class FeelingsChronology {
     private HashMap<String,Feeling> feelings_saved;
     private int number_days_chronology;
 
-    public FeelingsChronology(int number_days_chronology, SharedPreferences sharedPreferences, Context context){
+    public FeelingsChronology(int number_days_chronology, SharedPreferences sharedPreferences){
 
         this.sharedPreferences = sharedPreferences;
         this.number_days_chronology=number_days_chronology;
         recover_feelings_and_comments_saved();
-    }
-
-    public int getNumber_days_chronology(){
-        return number_days_chronology;
     }
 
     private void recover_feelings_and_comments_saved(){

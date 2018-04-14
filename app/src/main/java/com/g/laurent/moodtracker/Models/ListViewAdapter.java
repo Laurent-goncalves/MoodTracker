@@ -1,13 +1,12 @@
 package com.g.laurent.moodtracker.Models;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.g.laurent.moodtracker.R;
@@ -26,7 +25,6 @@ public class ListViewAdapter extends BaseAdapter {
     private int[] colors;
     private int screen_width;
     private int screen_height;
-    private View view;
     @BindView(R.id.toast_custom_layout) TextView convert_view;
 
     public ListViewAdapter(Context context, String[] texts_chrono, FeelingsChronology mFeelingsChronology, int[] colors, int screen_width, int screen_height){
@@ -63,16 +61,16 @@ public class ListViewAdapter extends BaseAdapter {
         }
 
         // Initialize views
-        view = LayoutInflater.from(context).inflate(R.layout.custom_toast, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.custom_toast, null);
         mFrameLayout= view.findViewById(R.id.toast_custom_layout);
-        comment_view=view.findViewById(R.id.toast_custom_textview);
+        comment_view= view.findViewById(R.id.toast_custom_textview);
 
         viewHolder = (ListViewHolder) convertView.getTag();
         if (this.viewHolder == null)
             this.viewHolder = new ListViewHolder();
 
         // RELATIVELAYOUT (bar for each feeling)
-        this.viewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.relative_layout);
+        this.viewHolder.mRelativeLayout = convertView.findViewById(R.id.relative_layout);
 
         // Define the height of each relativelayout according to the number of days of chronology
         define_height_of_each_relativelayout();
@@ -95,7 +93,7 @@ public class ListViewAdapter extends BaseAdapter {
         viewHolder.mRelativeLayout.getLayoutParams().width = (1 + feeling.getFeeling()) * screen_width / colors.length;
 
         // TEXTVIEW for the chrono tests (e.g. "il y a une semaine", "hier",...)
-        viewHolder.mTextView = (TextView) convertView.findViewById(R.id.fragment_chrono_text);
+        viewHolder.mTextView = convertView.findViewById(R.id.fragment_chrono_text);
         viewHolder.mTextView.setText(texts_chrono[position]);
 
         // IMAGEVIEW for the symbol comment
@@ -109,7 +107,7 @@ public class ListViewAdapter extends BaseAdapter {
     private void define_imageview_for_symbol_comment(Feeling feeling, View convertView){
         final String comment = feeling.getComment();
         if (comment != null) {
-            viewHolder.mImageView = (ImageView) convertView.findViewById(R.id.fragment_chrono_comment);
+            viewHolder.mImageView = convertView.findViewById(R.id.fragment_chrono_comment);
             viewHolder.mImageView.setImageResource(R.drawable.ic_comment_black_48px);
             viewHolder.mImageView.setOnClickListener(v -> {
                 comment_view.setText(comment);

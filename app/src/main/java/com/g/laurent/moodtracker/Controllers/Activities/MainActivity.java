@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.PersistableBundle;
@@ -45,10 +44,8 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
     private FeelingsChronology mFeelingsChronology;
     private String[] chrono_texts;
     private ViewPager pager;
-    private PageAdapter page_adapter;
     private SharedPreferences sharedPreferences;
     private PendingIntent pendingIntent;
-    private AlarmReceiver.callbackAlarm mcallbackAlarm;
     private AlarmReceiver alarmReceiver;
 
     @Override
@@ -59,16 +56,16 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         ButterKnife.bind(this);
 
         // Recover sharedpreferences
-        sharedPreferences=getSharedPreferences("chrono",Context.MODE_PRIVATE);
+        sharedPreferences=getSharedPreferences("chrono",MODE_PRIVATE);
 
         // Initialize variables
         fragment_number = 0;
         chrono_texts = getResources().getStringArray(R.array.text_chrono_list);
         define_current_feeling(savedInstanceState);
-        mFeelingsChronology = new FeelingsChronology(chrono_texts.length,sharedPreferences,getApplicationContext());
+        mFeelingsChronology = new FeelingsChronology(chrono_texts.length,sharedPreferences);
 
         // Configuration of alarm for saving feeling each day
-        mcallbackAlarm = this;
+        AlarmReceiver.callbackAlarm mcallbackAlarm = this;
         alarmReceiver = new AlarmReceiver();
         alarmReceiver.createCallbackAlarm(mcallbackAlarm);
 
@@ -95,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
         // Create alarm
         AlarmManager manager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        manager.setRepeating(AlarmManager.RTC,calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        if(manager!=null)
+            manager.setRepeating(AlarmManager.RTC,calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     public void save_chronology_in_sharedpreferrences(){
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
                 save_in_sharedpreferrences(i,new Feeling(-1,currentTimeMillis()-24*60*60*1000*i,null));
         }
         current_feeling=new Feeling(-1,currentTimeMillis(),null); // re-initialize current feeling
-        mFeelingsChronology = new FeelingsChronology(chrono_texts.length,sharedPreferences,getApplicationContext());
+        mFeelingsChronology = new FeelingsChronology(chrono_texts.length,sharedPreferences);
     }
 
     private void save_in_sharedpreferrences(int position, Feeling feeling){
@@ -204,18 +202,14 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
 
         // Associate a button "ANNULER"
         builder.setNegativeButton("ANNULER",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {}
-                });
+                (dialog, which) -> {});
 
         // Associate a button "VALIDER" and save the text written in last_comment
         builder.setPositiveButton("VALIDER",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        current_feeling.setComment(input.getText().toString());
-                        configure_page_adapter(fragment_number,current_feeling);
-                        pager.setCurrentItem(fragment_number);
-                    }
+                (dialog, which) -> {
+                    current_feeling.setComment(input.getText().toString());
+                    configure_page_adapter(fragment_number,current_feeling);
+                    pager.setCurrentItem(fragment_number);
                 });
         builder.show();
     }
@@ -244,18 +238,15 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
         icon_chrono.setImageResource(R.drawable.ic_history_black);
 
         // Associate to the icon chrono the launch of ChronoActivity in case the user click on it
-        icon_chrono.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), ChronoActivity.class);
-                startActivity(i); // we start the activity ChronoActivity
-            }
+        icon_chrono.setOnClickListener(v -> {
+            Intent i = new Intent(getApplicationContext(), ChronoActivity.class);
+            startActivity(i); // we start the activity ChronoActivity
         });
     }
 
     private void configure_page_adapter(int current_frag, Feeling feeling){
-        page_adapter = new PageAdapter(getSupportFragmentManager(),
-                getResources().getIntArray(R.array.colorPagesViewPager),feeling);
+        PageAdapter page_adapter = new PageAdapter(getSupportFragmentManager(),
+                getResources().getIntArray(R.array.colorPagesViewPager), feeling);
 
         pager.setAdapter(page_adapter);
         pager.setCurrentItem(current_frag);
@@ -264,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements PageFragment.call
     private void configureViewPager(){
 
         // Get ViewPager from layout
-        pager = (ViewPager)findViewById(R.id.activity_main_viewpager);
+        pager = findViewById(R.id.activity_main_viewpager);
 
         // Set OnPageChangeListener
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
